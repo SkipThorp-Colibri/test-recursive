@@ -17,7 +17,7 @@ export class RecursiveGroupListComponent {
   selectedGroupId: string = '';
 
   onRightClick(event: MouseEvent, group: Group) {
-    event.preventDefault(); // Prevent the browser's default context menu
+    event.preventDefault();
     this.contextMenuVisible = true;
 
     if (this.contextMenuVisible) {
@@ -38,6 +38,14 @@ export class RecursiveGroupListComponent {
     } else {
       console.log('Rename canceled or invalid input');
     }
+  }
+
+  deleteGroup(groupId: string) {
+    const groupIndex = this.groups.findIndex(g => g.name === groupId);
+    if (groupIndex === -1) return;
+
+    this.groups.splice(groupIndex, 1);
+    console.log(`Group deleted: ${groupId}`);
   }
 
   toggleGroup(group: Group) {
