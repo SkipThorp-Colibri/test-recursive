@@ -4,7 +4,8 @@
       <div
         (click)="group.toggleGroup()"
         [ngClass]="{'expanded cursor-pointer transition-colors duration-300': group.isExpanded(), 'collapsed': !group.isExpanded(), ' hover:bg-[#87CEFA]': group.isGroup()}"
-        class="group-node  p-2.5 border-2 border-[#1E3A8A] rounded-md flex items-center justify-start">
+        class="group-node  p-2.5 border-2 border-[#1E3A8A] rounded-md flex items-center justify-start"
+        (contextmenu)="onRightClick($event, group)">
 
         <!-- Toggle icon -->
          @if (group.isGroup()) {
@@ -29,3 +30,13 @@
     </div>
   }
 }
+
+
+  <clx-context-menu
+    [groupId]="selectedGroupId"
+    [visible]="contextMenuVisible"
+    [position]="contextMenuPosition"
+    (rename)="renameGroup($event)"
+    (close)="contextMenuVisible = false">
+  </clx-context-menu>
+

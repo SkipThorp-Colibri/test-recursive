@@ -1,0 +1,6 @@
+@if (visible) {
+  <div class="border-2 rounded-md p-2.5 bg-white absolute" [style.top.px]="position.y" [style.left.px]="position.x"
+  (mouseleave)="close.emit()">
+    <p (click)="onRename()">Rename Group</p>
+  </div>
+}
