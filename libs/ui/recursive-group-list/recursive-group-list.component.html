@@ -1,4 +1,4 @@
-@if (selectedGroup) {
+@if (selectedGroup()) {
   <clx-group-details [selectedGroup]="selectedGroup"></clx-group-details>
 }
 
@@ -6,7 +6,7 @@
   @for (group of groups; track $index) {
     <div class="m-1">
       <div
-        (click)="group.toggleGroup()"
+        (click)="onGroupClick(group)"
         [ngClass]="{'expanded cursor-pointer transition-colors duration-300': group.isExpanded(), 'collapsed': !group.isExpanded(), 'hover: cursor-pointer': group.isGroup()}"
         class="group-node p-2.5 border-2 rounded-md flex items-center justify-start"
         (contextmenu)="onRightClick($event, group)">

@@ -2,12 +2,11 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecursiveGroupListComponent } from '../../libs/ui/recursive-group-list/recursive-group-list.component';
 import { GroupService } from '../services/group.service';
-import { GroupDetailsComponent } from '../../libs/ui/group-details/group-details.component';
 
 @Component({
   selector: 'clx-recursive-group-root',
   standalone: true,
-  imports: [CommonModule, RecursiveGroupListComponent, GroupDetailsComponent],
+  imports: [CommonModule, RecursiveGroupListComponent],
   templateUrl: './app.component.html',
 })
 export class AppComponent {

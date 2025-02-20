@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import { Group } from '../../../src/models/group.model';
 import { CommonModule } from '@angular/common';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
@@ -11,11 +11,18 @@ import { GroupDetailsComponent } from '../group-details/group-details.component'
 })
 export class RecursiveGroupListComponent {
   @Input() groups: Group[] = [];
+  @Output() selectedGroupChange = new EventEmitter<Group | null>();
+
+  selectedGroup = signal<Group | null>(null);
+
+  onGroupClick(group: Group) {
+    this.selectedGroup.set(group);
+    this.selectedGroupChange.emit(group);
+  }
 
   contextMenuVisible = false;
   contextMenuPosition = { x: 0, y: 0 };
   selectedGroupId: string = '';
-  selectedGroup: Group = this.groups.filter(g => g.name === this.selectedGroupId)[0];
 
   onRightClick(event: MouseEvent, group: Group) {
     event.preventDefault();
