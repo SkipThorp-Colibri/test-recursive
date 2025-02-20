@@ -3,8 +3,8 @@
     <div class="m-1">
       <div
         (click)="group.toggleGroup()"
-        [ngClass]="{'expanded cursor-pointer transition-colors duration-300': group.isExpanded(), 'collapsed': !group.isExpanded(), ' hover:bg-[#87CEFA] cursor-pointer': group.isGroup()}"
-        class="group-node p-2.5 border-2 border-[#1E3A8A] rounded-md flex items-center justify-start"
+        [ngClass]="{'expanded cursor-pointer transition-colors duration-300': group.isExpanded(), 'collapsed': !group.isExpanded(), 'hover: cursor-pointer': group.isGroup()}"
+        class="group-node p-2.5 border-2 rounded-md flex items-center justify-start"
         (contextmenu)="onRightClick($event, group)">
 
          @if (group.isGroup()) {
