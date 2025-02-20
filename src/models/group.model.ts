@@ -35,4 +35,9 @@ export class Group implements IGroupData, IGroupMethods {
   isExpanded(): boolean {
     return this.expanded;
   }
+
+  selectedGroup(): string {
+    console.log(`Group toggled: ${this.name}`);
+    return this.name;
+  }
 }
