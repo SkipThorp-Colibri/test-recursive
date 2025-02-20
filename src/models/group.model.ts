@@ -1,9 +1,11 @@
 import { IGroupData, IGroupMethods } from '.'
 export class Group implements IGroupData, IGroupMethods {
   constructor(
+    public id: string,
     public name: string,
+    public description: string,
     public expanded: boolean = false,
-    public groups: Group[] = []
+    public subGroups: Group[] = []
   ) {}
 
   toggleGroup(): void {
@@ -11,25 +13,25 @@ export class Group implements IGroupData, IGroupMethods {
 
     // Recursively collapse all child groups if this group is collapsed
     // If collapsing, set all child groups' 'expanded' to false
-    if (!this.expanded && this.groups.length > 0) {
+    if (!this.expanded && this.subGroups.length > 0) {
       this.setAllChildGroupsCollapsed(this);
     }
   }
 
   // Helper method to set all child groups to collapsed
   private setAllChildGroupsCollapsed(group: Group): void {
-    group.groups.forEach(childGroup => {
-      childGroup.expanded = false;
+    group.subGroups.forEach(subGroup => {
+      subGroup.expanded = false;
 
       // If the child group has its own children, collapse them as well
-      if (childGroup.groups.length > 0) {
-        this.setAllChildGroupsCollapsed(childGroup);
+      if (subGroup.subGroups.length > 0) {
+        this.setAllChildGroupsCollapsed(subGroup);
       }
     });
   }
 
   isGroup(): boolean {
-    return this.groups && this.groups.length > 0;
+    return this.subGroups && this.subGroups.length > 0;
   }
 
   isExpanded(): boolean {

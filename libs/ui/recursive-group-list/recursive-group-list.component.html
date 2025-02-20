@@ -21,7 +21,7 @@
 
        @if (group.isExpanded()) {
         <div class="group-subgroups ml-5 p-1.25">
-          <clx-recursive-group-list [groups]="group.groups"></clx-recursive-group-list>
+          <clx-recursive-group-list [groups]="group.subGroups"></clx-recursive-group-list>
         </div>
       }
     </div>

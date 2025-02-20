@@ -1,5 +1,7 @@
 export interface IGroupData {
+  id: string;
   name: string;
+  description: string;
   expanded: boolean;
-  groups?: IGroupData[];
+  subGroups?: IGroupData[];
 }
