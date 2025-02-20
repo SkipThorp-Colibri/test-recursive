@@ -7,7 +7,6 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
   selector: 'clx-recursive-group-list',
   imports: [CommonModule, ContextMenuComponent],
   templateUrl: './recursive-group-list.component.html',
-  styleUrls: ['./recursive-group-list.component.css']
 })
 export class RecursiveGroupListComponent {
   @Input() groups: Group[] = [];

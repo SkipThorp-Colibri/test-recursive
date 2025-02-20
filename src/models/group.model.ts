@@ -1,4 +1,4 @@
-import { IGroupData, IGroupMethods } from './interfaces'
+import { IGroupData, IGroupMethods } from '.'
 export class Group implements IGroupData, IGroupMethods {
   constructor(
     public name: string,

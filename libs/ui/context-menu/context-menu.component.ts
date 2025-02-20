@@ -4,7 +4,6 @@ import { Component, EventEmitter, HostListener, Input, Output } from '@angular/c
   selector: 'clx-context-menu',
   standalone: true,
   templateUrl: './context-menu.component.html',
-  styleUrls: ['./context-menu.component.css']
 })
 export class ContextMenuComponent {
   @Input() groupId!: string;

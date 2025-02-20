@@ -8,7 +8,6 @@ import { GroupService } from '../services/group.service';
   standalone: true,
   imports: [CommonModule, RecursiveGroupListComponent],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   title = 'test-recursive';
