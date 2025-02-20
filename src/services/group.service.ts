@@ -100,7 +100,7 @@ export class GroupService {
 
       this.groups.set(mockGroups);
       this.loading.set(false);
-    }, 3000);
+    }, 1234);
   }
 
   // Helper function to create a group with nested groups
