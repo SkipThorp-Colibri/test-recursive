@@ -7,6 +7,7 @@ import { Group } from '../models/group.model';
 export class GroupService {
   private groups = signal<Group[]>([]);
   private loading = signal<boolean>(false);
+  public selectedGroup = signal<Group | null>(null);
 
   // Expose groups as a signal for components to use
   getGroups = this.groups;
@@ -104,7 +105,13 @@ export class GroupService {
   }
 
   // Helper function to create a group with nested groups
-  private createGroup(id: string, name: string, description: string, expanded: boolean, subgroups: Group[] = []): Group {
-    return new Group(crypto.randomUUID.toString(), name, description, expanded, subgroups);
+  private createGroup(id: string = crypto.randomUUID.toString(), name: string, description: string, expanded: boolean, subgroups: Group[] = []): Group {
+    return new Group(id, name, description, expanded, subgroups);
   }
+
+  setSelectedGroup(group: Group): void {
+    console.log(`Group toggled in service: ${group.name}`);
+    this.selectedGroup.set(group);
+  }
+
 }

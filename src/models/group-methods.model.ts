@@ -1,6 +1,8 @@
+import { Group } from '.';
+
 export interface IGroupMethods {
   toggleGroup(): void;
   isGroup(): boolean;
   isExpanded(): boolean;
-  selectedGroup(): string;
+  selectedGroup(group: Group): Group | null;
 }

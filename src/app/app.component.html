@@ -1,9 +1,12 @@
 <!-- the following h1 can be removed upon implementation -->
 <h1 class="text-3xl font-bold pt-2 pb-2 underline mb-4 text-center">Recursive Group Examples</h1>
 
+<!-- @if (selectedGroup()) { -->
+  <clx-group-details [selectedGroup]="selectedGroup()"></clx-group-details>
+<!-- } -->
+
 @if (groups()) {
   <div>
     <clx-recursive-group-list [groups]="groups()"></clx-recursive-group-list>
   </div>
 }
-

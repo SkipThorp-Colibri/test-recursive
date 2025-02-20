@@ -1,1 +1,20 @@
-<p>group-details works!</p>
+<!-- <div *ngIf="selectedGroup" class="group-details"> -->
+  <h2>Group Details</h2>
+  <p><strong>ID:</strong> {{ selectedGroup?.id }}</p>
+  <p><strong>Name:</strong> {{ selectedGroup?.name }}</p>
+  <p><strong>Description:</strong> {{ selectedGroup?.description }}</p>
+  <p><strong>Expanded:</strong> {{ selectedGroup?.expanded ? 'Yes' : 'No' }}</p>
+
+  <div *ngIf="selectedGroup && selectedGroup.subGroups.length > 0">
+    <h3>Subgroups:</h3>
+    <ul>
+      <li *ngFor="let subGroup of selectedGroup.subGroups">
+        {{ subGroup.name }}
+      </li>
+    </ul>
+  </div>
+<!-- </div> -->
+
+<div *ngIf="!selectedGroup">
+  <p>No group selected. Click a group to view details.</p>
+</div>

@@ -2,10 +2,11 @@ import { Component, Input } from '@angular/core';
 import { Group } from '../../../src/models/group.model';
 import { CommonModule } from '@angular/common';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
+import { GroupDetailsComponent } from '../group-details/group-details.component';
 
 @Component({
   selector: 'clx-recursive-group-list',
-  imports: [CommonModule, ContextMenuComponent],
+  imports: [CommonModule, ContextMenuComponent, GroupDetailsComponent],
   templateUrl: './recursive-group-list.component.html',
 })
 export class RecursiveGroupListComponent {
@@ -14,6 +15,7 @@ export class RecursiveGroupListComponent {
   contextMenuVisible = false;
   contextMenuPosition = { x: 0, y: 0 };
   selectedGroupId: string = '';
+  selectedGroup: Group = this.groups.filter(g => g.name === this.selectedGroupId)[0];
 
   onRightClick(event: MouseEvent, group: Group) {
     event.preventDefault();
@@ -23,7 +25,6 @@ export class RecursiveGroupListComponent {
       this.selectedGroupId = group.name;
       this.contextMenuPosition = { x: event.clientX, y: event.clientY };
     }
-
   }
 
   renameGroup(groupId: string) {
@@ -48,6 +49,7 @@ export class RecursiveGroupListComponent {
   }
 
   toggleGroup(group: Group) {
+    this.selectedGroupId = group.id; // Ensure the selected group is updated
     group.toggleGroup();
   }
 }
