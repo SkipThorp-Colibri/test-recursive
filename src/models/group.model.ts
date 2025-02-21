@@ -10,7 +10,7 @@ export class Group implements IGroupData, IGroupMethods {
   ) {}
 
   toggleGroup(): void {
-    console.log(`Group toggled in model: ${this.name}`);
+    // console.log(`Group toggled in model: ${this.name}`);
     this.selectedGroup(this);
     this.expanded = !this.expanded;
 

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecursiveGroupListComponent } from '../../libs/ui/recursive-group-list/recursive-group-list.component';
 import { GroupService } from '../services/group.service';
@@ -12,6 +12,8 @@ import { Group } from '../models/group.model';
   templateUrl: './app.component.html',
 })
 export class AppComponent {
+  @Input() selectedGroupChange = signal<Group | null>(null);
+
   title = 'test-recursive';
   private groupService = inject(GroupService);
   groups = this.groupService.getGroups;
