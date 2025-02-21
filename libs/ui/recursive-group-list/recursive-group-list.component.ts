@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import { Group } from '../../../src/models/group.model';
 import { CommonModule } from '@angular/common';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
-import { GroupDetailsComponent } from '../group-details/group-details.component';
+import { GroupDetailsComponent } from "../group-details/group-details.component";
 
 @Component({
   selector: 'clx-recursive-group-list',
@@ -18,6 +18,7 @@ export class RecursiveGroupListComponent {
   onGroupClick(group: Group) {
     this.selectedGroup.set(group);
     this.selectedGroupChange.emit(group);
+    this.toggleGroup(group);
   }
 
   contextMenuVisible = false;
