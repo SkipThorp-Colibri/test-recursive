@@ -37,6 +37,9 @@ export class RecursiveGroupListComponent {
     }
   }
 
+  renameGroup(groupId: string, newName: string) {
+    this.groupService.renameGroup(groupId, newName);
+  }
 
 
   deleteGroup(groupId: string) {

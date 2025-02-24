@@ -5,5 +5,4 @@ export interface IGroupData {
   expanded: boolean;
   parentId?: string;
   subGroups?: IGroupData[];
-  onRenameGroup(newName: string): void;
 }

@@ -5,5 +5,5 @@ export interface IGroupMethods {
   isGroup(): boolean;
   isExpanded(): boolean;
   selectedGroup(group: Group): Group | null;
-  onRenameGroup(newName: string): void;
+  rename(newName: string): void;
 }

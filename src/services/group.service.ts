@@ -131,10 +131,16 @@ export class GroupService {
     this.selectedGroup.set(group);
   }
 
-  onRenameGroup(newName: string): void {
-    console.log(`Rename group to: ${newName}`);
-    var group = this.selectedGroup();
-    console.log(`Group Id of ${group!.id} renamed to: ${newName}`);
+  // Rename a group by updating its name
+  renameGroup(groupId: string, newName: string): void {
+    const updateGroup = (groups: Group[]): Group[] =>
+      groups.map(group =>
+        group.id === groupId
+          ? new Group(group.id, newName, group.description, group.expanded, group.parentId, group.subGroups)
+          : new Group(group.id, group.name, group.description, group.expanded, group.parentId, updateGroup(group.subGroups || []))
+      );
+
+    this.groups.set(updateGroup(this.groups()));
   }
 
   onMove(groupId: string, newParentId: string, groups: Group[]) {

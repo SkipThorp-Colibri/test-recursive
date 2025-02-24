@@ -47,8 +47,7 @@ export class Group implements IGroupData, IGroupMethods {
     return group;
   }
 
-  onRenameGroup(newName: string): void {
+  rename(newName: string): void {
     this.name = newName;
-    console.log(`Rename group to: ${newName}`);
   }
 }
