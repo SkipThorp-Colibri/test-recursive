@@ -3,5 +3,7 @@ export interface IGroupData {
   name: string;
   description: string;
   expanded: boolean;
+  parentId?: string;
   subGroups?: IGroupData[];
+  onRenameGroup(newName: string): void;
 }

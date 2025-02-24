@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, inject } from '@angular/core';
 import { Group } from '../../../src/models/group.model';
 import { CommonModule } from '@angular/common';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
+import { GroupService } from '../../../src/services/group.service';
 
 @Component({
   selector: 'clx-recursive-group-list',
@@ -9,6 +10,7 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
   templateUrl: './recursive-group-list.component.html',
 })
 export class RecursiveGroupListComponent {
+  groupService = inject(GroupService);
   @Input() groups: Group[] = [];
   @Output() selectedGroupChange = new EventEmitter<Group | null>();
 
@@ -34,23 +36,13 @@ export class RecursiveGroupListComponent {
     this.contextMenuVisible = true;
 
     if (this.contextMenuVisible) {
-      this.selectedGroupId = group.name;
+      // this.selectedGroupId = group.name;
+      this.groupService.selectedGroup.set(group);
       this.contextMenuPosition = { x: event.clientX, y: event.clientY };
     }
   }
 
-  renameGroup(groupId: string) {
-    const group = this.groups.find(g => g.name === groupId);
-    if (!group) return;
 
-    const newName = prompt('Enter a new name for the group:', group.name);
-    if (newName && newName.trim()) {
-      group.name = newName.trim();
-      console.log(`Group renamed to: ${group.name}`);
-    } else {
-      console.log('Rename canceled or invalid input');
-    }
-  }
 
   deleteGroup(groupId: string) {
     const groupIndex = this.groups.findIndex(g => g.name === groupId);
@@ -61,7 +53,8 @@ export class RecursiveGroupListComponent {
   }
 
   toggleGroup(group: Group) {
-    this.selectedGroupId = group.id; // Ensure the selected group is updated
+    // this.selectedGroupId = group.id; // Ensure the selected group is updated
+    this.groupService.selectedGroup.set(group);
     group.toggleGroup();
   }
 }

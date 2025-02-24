@@ -6,11 +6,12 @@ export class Group implements IGroupData, IGroupMethods {
     public name: string,
     public description: string,
     public expanded: boolean = false,
+    public parentId: string = '',
     public subGroups: Group[] = []
   ) {}
 
   toggleGroup(): void {
-    // console.log(`Group toggled in model: ${this.name}`);
+    console.log(`Group toggled in model: ${this.id}`);
     this.selectedGroup(this);
     this.expanded = !this.expanded;
 
@@ -44,5 +45,10 @@ export class Group implements IGroupData, IGroupMethods {
 
   selectedGroup(group: Group): Group {
     return group;
+  }
+
+  onRenameGroup(newName: string): void {
+    this.name = newName;
+    console.log(`Rename group to: ${newName}`);
   }
 }
