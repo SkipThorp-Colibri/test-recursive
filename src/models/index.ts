@@ -1,3 +1,1 @@
-export * from "./group-data.model";
-export * from "./group-methods.model";
-export * from "./group.model";
+export * from "../../libs/ui/recursive-group-list/src/models/group-models";

@@ -1,6 +1,6 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Group } from '../../../src/models/group.model';
+import { GroupModel } from '../../models/group-models';
 
 @Component({
   selector: 'clx-group-details',
@@ -9,5 +9,5 @@ import { Group } from '../../../src/models/group.model';
   templateUrl: './group-details.component.html',
 })
 export class GroupDetailsComponent {
-  @Input() selectedGroup = signal<Group | null>(null);
+  @Input() selectedGroup: GroupModel | undefined;
 }

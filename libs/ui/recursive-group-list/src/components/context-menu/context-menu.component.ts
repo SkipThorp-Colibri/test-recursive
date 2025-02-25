@@ -1,6 +1,5 @@
-import { Component, EventEmitter, HostListener, inject, Input, Output } from '@angular/core';
-import { GroupService } from '../../../src/services/group.service';
-import { Group } from '../../../src/models';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { GroupModel } from '../../models/group-models';
 
 @Component({
   selector: 'clx-context-menu',
@@ -8,8 +7,8 @@ import { Group } from '../../../src/models';
   templateUrl: './context-menu.component.html',
 })
 export class ContextMenuComponent {
-  private groupService = inject(GroupService);
-  @Input() group!: Group;
+
+  @Input() group!: GroupModel;
   @Input() visible = false;
   @Input() position = { x: 0, y: 0 };
 
@@ -27,7 +26,7 @@ export class ContextMenuComponent {
   };
 
   onDelete() {
-    this.delete.emit(this.groupService.selectedGroup$()!.id);
+    this.delete.emit(this.group.id);
     this.close.emit();
   }
 
