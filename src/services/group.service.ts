@@ -137,19 +137,6 @@ export class GroupService {
     console.log(`Group Id of ${group!.id} renamed to: ${newName}`);
   }
 
-  // renameGroup(groupId: string) {
-
-  //   if (!group) return;
-
-  //   const newName = prompt('Enter a new name for the group:', group.name);
-  //   if (newName && newName.trim()) {
-  //     group.name = newName.trim();
-  //     console.log(`Group renamed to: ${group.name}`);
-  //   } else {
-  //     console.log('Rename canceled or invalid input');
-  //   }
-  // }
-
   onMove(groupId: string, newParentId: string, groups: Group[]) {
     const groupToMove = this.findGroupById(groupId, groups);
     if (groupToMove) {
