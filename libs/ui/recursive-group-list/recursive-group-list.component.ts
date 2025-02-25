@@ -15,26 +15,28 @@ export class RecursiveGroupListComponent {
   @Input() groups: Group[] = [];
   @Output() selectedGroupChange = new EventEmitter<Group | null>();
 
-  selectedGroup = signal<Group | null>(null);
+  selectedGroup = this.groupService.selectedGroup$;
 
   onGroupClick(group: Group) {
+    this.selectedGroup.set(group);
     this.selectedGroupChange.emit(group);
     this.toggleGroup(group);
   }
 
   contextMenuVisible = false;
   contextMenuPosition = { x: 0, y: 0 };
-  selectedGroupId: string = '';
 
   onRightClick(event: MouseEvent, group: Group) {
+    console.log(`Selected group: ${this.selectedGroup()!.id} ${this.selectedGroup()!.name}`);
     console.log(`Right clicked on group: ${group.id} ${group.name}`);
     console.log(`Group right-clicked: ${group.id} ${group.name}`);
     event.preventDefault();
     this.contextMenuVisible = true;
 
     if (this.contextMenuVisible) {
-      this.selectedGroupId = group.id;
-      this.groupService.selectedGroup.set(group);
+      // this.selectedGroupId = group.name;
+      this.groupService.selectedGroup$.set(group);
+      console.log(`Selected group: ${group.id} ${group.name}`);
       this.contextMenuPosition = { x: event.clientX, y: event.clientY };
     }
   }
