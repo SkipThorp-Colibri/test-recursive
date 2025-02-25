@@ -7,7 +7,8 @@ import { Group } from '../models/group.model';
 export class GroupService {
   private groups = signal<Group[]>([]);
   private loading = signal<boolean>(false);
-  private selectedGroup = signal<Group | null>(null);
+  // private selectedGroup = signal<Group | null>(null);
+  private selectedGroup = signal<Partial<Group>>({});
 
   // Expose groups as a signal for components to use
   getGroups = this.groups;
