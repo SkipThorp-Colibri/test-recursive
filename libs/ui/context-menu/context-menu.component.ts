@@ -1,4 +1,6 @@
-import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, inject, Input, Output } from '@angular/core';
+import { GroupService } from '../../../src/services/group.service';
+import { Group } from '../../../src/models';
 
 @Component({
   selector: 'clx-context-menu',
@@ -6,7 +8,8 @@ import { Component, EventEmitter, HostListener, Input, Output } from '@angular/c
   templateUrl: './context-menu.component.html',
 })
 export class ContextMenuComponent {
-  @Input() groupId!: string;
+  private groupService = inject(GroupService);
+  @Input() group!: Group;
   @Input() visible = false;
   @Input() position = { x: 0, y: 0 };
 
@@ -14,13 +17,17 @@ export class ContextMenuComponent {
   @Output() delete = new EventEmitter<string>();
   @Output() close = new EventEmitter<void>();
 
-  onRename() {
-    this.rename.emit(this.groupId);
-    this.close.emit();
-  }
+  renameGroup = (): void => {
+    console.log(`Rename group with id of ${this.group.id}`);
+    if (!this.group) return;
+    const newName = prompt(`Rename group '${this.group.name}':`, this.group.name);
+    if (newName && newName.trim() !== this.group.name) {
+      this.rename.emit(newName.trim());
+    }
+  };
 
   onDelete() {
-    this.delete.emit(this.groupId);
+    this.delete.emit(this.groupService.selectedGroup$()!.id);
     this.close.emit();
   }
 

@@ -10,6 +10,7 @@ import { GroupService } from '../../../src/services/group.service';
   templateUrl: './recursive-group-list.component.html',
 })
 export class RecursiveGroupListComponent {
+
   groupService = inject(GroupService);
   @Input() groups: Group[] = [];
   @Output() selectedGroupChange = new EventEmitter<Group | null>();
@@ -26,6 +27,7 @@ export class RecursiveGroupListComponent {
   selectedGroupId: string = '';
 
   onRightClick(event: MouseEvent, group: Group) {
+    console.log(`Right clicked on group: ${group.id} ${group.name}`);
     console.log(`Group right-clicked: ${group.id} ${group.name}`);
     event.preventDefault();
     this.contextMenuVisible = true;
@@ -37,10 +39,12 @@ export class RecursiveGroupListComponent {
     }
   }
 
-  renameGroup(groupId: string, newName: string) {
-    this.groupService.renameGroup(groupId, newName);
+  renameGroup(newName: string) {
+    const updatedGroup = this.groupService.renameGroupById(this.groupService.selectedGroup$()!.id, newName.trim());
+    if (updatedGroup) {
+      console.log(`Group renamed to: ${updatedGroup.name}`);
+    }
   }
-
 
   deleteGroup(groupId: string) {
     const groupIndex = this.groups.findIndex(g => g.name === groupId);
@@ -52,7 +56,7 @@ export class RecursiveGroupListComponent {
 
   toggleGroup(group: Group) {
     // this.selectedGroupId = group.id; // Ensure the selected group is updated
-    this.groupService.selectedGroup.set(group);
+    this.groupService.selectedGroup$.set(group);
     group.toggleGroup();
   }
 }

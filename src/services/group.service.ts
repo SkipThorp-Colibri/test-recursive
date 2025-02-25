@@ -7,10 +7,11 @@ import { Group } from '../models/group.model';
 export class GroupService {
   private groups = signal<Group[]>([]);
   private loading = signal<boolean>(false);
-  public selectedGroup = signal<Group | null>(null);
+  private selectedGroup = signal<Group | null>(null);
 
   // Expose groups as a signal for components to use
   getGroups = this.groups;
+  selectedGroup$ = this.selectedGroup;
 
   constructor() {
     this.fetchGroups();
@@ -126,22 +127,73 @@ export class GroupService {
     return new Group(id, name, description, expanded, parentId, subgroups);
   }
 
-  setSelectedGroup(group: Group): void {
-    console.log(`Group toggled in service: ${group.id}`);
-    this.selectedGroup.set(group);
-  }
+  // setSelectedGroup(group: Group): void {
+  //   console.log(`Group toggled in service: ${group.id}`);
+  //   this.selectedGroup.set(group);
+  // }
 
-  // Rename a group by updating its name
-  renameGroup(groupId: string, newName: string): void {
+  renameGroupById = (groupId: string, newName: string): Group | null => {
+    let updatedGroup: Group | null = null;
+    const updatedGroups = this.groups().map(group => {
+      if (group.id === groupId) {
+        updatedGroup = Object.assign(Object.create(Object.getPrototypeOf(group)), group, { name: newName });
+        return updatedGroup;
+      }
+      return group;
+    }).filter((group): group is Group => group !== null);
+
+    if (updatedGroup) {
+      this.groups.set(updatedGroups);
+      this.selectedGroup.set(updatedGroup);
+    }
+    return updatedGroup;
+  };
+
+  // onRenameGroup(newName: string): void {
+
+  //   const group = this.selectedGroup();
+  //   console.log(`Group with id of ${group?.id} renamed to: ${newName}`);
+  //   if (group) {
+  //     if (newName && newName.trim()) {
+  //       group.name = newName.trim();
+  //       const groupName = this.renameGroup(group, newName);
+  //       console.log(`Group renamed to: ${groupName}`);
+
+  //     } else {
+  //       console.log('Rename canceled or invalid input');
+  //     }
+
+  //   }
+
+  // }
+
+  // Rename a group by updating its name within the groups signal
+  renameGroup = (group: Group, newName: string): Group | null => {
+    console.log(`Group renamed: ${group.id} to ${newName}`);
+
     const updateGroup = (groups: Group[]): Group[] =>
-      groups.map(group =>
-        group.id === groupId
-          ? new Group(group.id, newName, group.description, group.expanded, group.parentId, group.subGroups)
-          : new Group(group.id, group.name, group.description, group.expanded, group.parentId, updateGroup(group.subGroups || []))
+      groups.map(g =>
+        g.id === group.id
+          ? new Group(g.id, newName, g.description, g.expanded, g.parentId, g.subGroups)
+          : new Group(g.id, g.name, g.description, g.expanded, g.parentId, updateGroup(g.subGroups || []))
       );
 
     this.groups.set(updateGroup(this.groups()));
-  }
+    return this.groups().find(g => g.id === group.id) || null;
+  };
+
+  // Rename a group and return the updated group
+  onRenameGroup = (newName: string): Group | null => {
+    const group = this.selectedGroup();
+    console.log(`Group with id of ${group?.id} renamed to: ${newName}`);
+
+    if (group && newName && newName.trim()) {
+      return this.renameGroup(group, newName.trim());
+    }
+
+    console.log('Rename canceled or invalid input');
+    return null;
+  };
 
   onMove(groupId: string, newParentId: string, groups: Group[]) {
     const groupToMove = this.findGroupById(groupId, groups);
