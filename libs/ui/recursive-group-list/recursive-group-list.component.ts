@@ -21,22 +21,17 @@ export class RecursiveGroupListComponent {
     this.toggleGroup(group);
   }
 
-  // onGroupClick(group: Group) {
-  //   this.selectedGroup.set(group);
-  //   this.selectedGroupChange.emit(group);
-  //   this.toggleGroup(group);
-  // }
-
   contextMenuVisible = false;
   contextMenuPosition = { x: 0, y: 0 };
   selectedGroupId: string = '';
 
   onRightClick(event: MouseEvent, group: Group) {
+    console.log(`Group right-clicked: ${group.id} ${group.name}`);
     event.preventDefault();
     this.contextMenuVisible = true;
 
     if (this.contextMenuVisible) {
-      // this.selectedGroupId = group.name;
+      this.selectedGroupId = group.id;
       this.groupService.selectedGroup.set(group);
       this.contextMenuPosition = { x: event.clientX, y: event.clientY };
     }
