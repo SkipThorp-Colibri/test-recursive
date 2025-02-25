@@ -18,7 +18,7 @@ export class ContextMenuComponent {
   @Output() close = new EventEmitter<void>();
 
   renameGroup = (): void => {
-    console.log(`Rename group with id of ${this.group.id}`);
+    console.log(`Rename group with id of\n\r ${this.group.id}`);
     if (!this.group) return;
     const newName = prompt(`Rename group '${this.group.name}':`, this.group.name);
     if (newName && newName.trim() !== this.group.name) {
