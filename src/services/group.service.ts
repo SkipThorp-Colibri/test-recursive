@@ -12,6 +12,7 @@ export class GroupService {
   // Expose groups as a signal for components to use
   getGroups = this.groups;
   selectedGroup$ = this.selectedGroup;
+  loading$ = this.loading;
 
   constructor() {
     this.fetchGroups();
@@ -133,6 +134,7 @@ export class GroupService {
   // }
 
   renameGroupById = (groupId: string, newName: string): Group | null => {
+    console.log(`In groupService, Group with id of ${groupId} renamed to: ${newName}`);
     let updatedGroup: Group | null = null;
     const updatedGroups = this.groups().map(group => {
       if (group.id === groupId) {
