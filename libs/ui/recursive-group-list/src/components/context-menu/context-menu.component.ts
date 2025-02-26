@@ -1,5 +1,5 @@
 import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
-import { GroupModel } from '../../models/group-models';
+import { GroupModel } from '../../models/group-model';
 
 @Component({
   selector: 'clx-context-menu',
@@ -30,7 +30,7 @@ export class ContextMenuComponent {
     }
   };
 
-  onDelete(): void {
+  onDelete = (): void => {
     if (!this.group) {
       console.error("Error: No group is selected. Cannot delete.");
       return;
@@ -47,7 +47,7 @@ export class ContextMenuComponent {
 
 
   @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event) {
+  onClickOutside = (event: Event) => {
     this.close.emit();
   }
 }

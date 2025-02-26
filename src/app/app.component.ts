@@ -21,12 +21,12 @@ export class AppComponent {
     this.fetchGroups();
   }
 
-  onSelectedGroupChange(group: GroupModel) {
+  onSelectedGroupChange = (group: GroupModel) => {
     console.log('group change:', group);
   }
 
   // Simulate fetching groups from an API
-  private fetchGroups(): void {
+  private fetchGroups = (): void => {
     this.loading.set(true);
     setTimeout(() => {
       this.groups = [
@@ -130,13 +130,13 @@ export class AppComponent {
     }, 1000);
   }
 
-  private createGroup(
+  private createGroup = (
     id: string = crypto.randomUUID.toString(),
     name: string,
     description: string,
     expanded: boolean,
     parentId: string = '',
-    subgroups: GroupModel[] = []): GroupModel {
+    subgroups: GroupModel[] = []): GroupModel => {
     return {
       id: id,
       name: name,

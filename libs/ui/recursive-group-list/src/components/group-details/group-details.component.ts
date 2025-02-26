@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GroupModel } from '../../models/group-models';
+import { GroupModel } from '../../models/group-model';
 
 @Component({
   selector: 'clx-group-details',

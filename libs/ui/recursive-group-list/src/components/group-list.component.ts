@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { GroupModel } from '../models/group-models';
+import { GroupModel } from '../models/group-model';
 import { RecursiveGroupListComponent } from './recursive-group-list/recursive-group-list.component';
 import { GroupDetailsComponent } from './group-details/group-details.component';
 
@@ -22,7 +22,7 @@ export class GroupListComponent {
 
     selectedGroup: GroupModel | undefined;
 
-    onSelectedGroupChange(group: GroupModel) {
+    onSelectedGroupChange = (group: GroupModel) => {
         this.selectedGroup = group;
         this.selectedGroupChange.emit(group);
     }
