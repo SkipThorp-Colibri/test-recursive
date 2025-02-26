@@ -12,23 +12,39 @@ export class ContextMenuComponent {
   @Input() visible = false;
   @Input() position = { x: 0, y: 0 };
 
-  @Output() rename = new EventEmitter<string>();
-  @Output() delete = new EventEmitter<string>();
+  @Output() rename = new EventEmitter<{ newName: string; group: GroupModel }>();
+  @Output() delete = new EventEmitter<{ group: GroupModel }>();
   @Output() close = new EventEmitter<void>();
 
-  renameGroup = (): void => {
-    console.log(`Rename group with id of\n\r ${this.group.id}`);
-    if (!this.group) return;
+  onRenameGroup = (): void => {
+    if (!this.group) {
+      console.error("No group is selected. Cannot rename.");
+      return;
+    }
+
+    console.log(`onRename group with ID: ${this.group.id}`);
+
     const newName = prompt(`Rename group '${this.group.name}':`, this.group.name);
     if (newName && newName.trim() !== this.group.name) {
-      this.rename.emit(newName.trim());
+      this.rename.emit({ newName: newName.trim(), group: this.group });
     }
   };
 
-  onDelete() {
-    this.delete.emit(this.group.id);
-    this.close.emit();
+  onDelete(): void {
+    if (!this.group) {
+      console.error("Error: No group is selected. Cannot delete.");
+      return;
+    }
+
+    console.log(`Attempting to delete group: ${this.group.id} - ${this.group.name}`);
+
+    const confirmDelete = confirm(`Are you sure you want to delete '${this.group.name}'?`);
+    if (confirmDelete) {
+      this.delete.emit({ group: this.group });
+      this.close.emit();
+    }
   }
+
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {

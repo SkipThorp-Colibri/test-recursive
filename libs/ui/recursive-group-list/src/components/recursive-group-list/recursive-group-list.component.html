@@ -32,8 +32,9 @@
     <clx-context-menu
       [visible]="contextMenuVisible"
       [position]="contextMenuPosition"
-      (rename)="renameGroup($event, group)"
-      (delete)="deleteGroup($event)"
+      [group]="selectedGroup!"
+      (rename)="renameGroup($event.newName, $event.group)"
+      (delete)="deleteGroup($event.group)"
       (close)="contextMenuVisible = false">
     </clx-context-menu>
   }

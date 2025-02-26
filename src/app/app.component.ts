@@ -64,6 +64,13 @@ export class AppComponent {
                   'Visual development Team 2',
                   false,
                   'bb408b26-6dd9-4fb6-b0f2-e2b78e8cbc3e',
+                ),
+                this.createGroup(
+                  'da016a98-247b-4d8e-bac0-73fbace41662',
+                  'Visual Team 3',
+                  'Visual development Team 3',
+                  false,
+                  'bb408b26-6dd9-4fb6-b0f2-e2b78e8cbc3e',
                 )
               ]
             )

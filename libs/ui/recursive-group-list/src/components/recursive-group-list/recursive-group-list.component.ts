@@ -18,39 +18,60 @@ export class RecursiveGroupListComponent {
     this.toggleGroup(group);
   }
 
-  // onGroupClick(group: Group) {
-  //   this.selectedGroup.set(group);
-  //   this.selectedGroupChange.emit(group);
-  //   this.toggleGroup(group);
-  // }
-
+  selectedGroup: GroupModel | undefined;
   contextMenuVisible = false;
   contextMenuPosition = { x: 0, y: 0 };
 
   onRightClick(event: MouseEvent, group: GroupModel) {
-    console.log(`Selected group: ${group.id} ${group.name}`);
-    console.log(`Right clicked on group: ${group.id} ${group.name}`);
     event.preventDefault();
-    this.contextMenuVisible = true;
+    this.selectedGroupChange.emit(group);
+    console.log(`Right-clicked on: ${group.id} - ${group.name}`);
 
-    if (this.contextMenuVisible) {
-      console.log(`Selected group: ${group.id} ${group.name}`);
-      this.contextMenuPosition = { x: event.clientX, y: event.clientY };
-    }
+    this.selectedGroup = group; // ✅ Assign the exact clicked group (No Deep Copy)
+    this.contextMenuVisible = true;
+    this.contextMenuPosition = { x: event.clientX, y: event.clientY };
+
+    this.showSelectedGroup();
+
+    console.log(`Updated selectedGroup for menu: ${this.selectedGroup.id} - ${this.selectedGroup.name}`);
+  }
+
+  showSelectedGroup() {
+    console.log(`Showing Selected group: ${this.selectedGroup?.id} - ${this.selectedGroup?.name}\n\r ${this.selectedGroup?.subGroups}`);
   }
 
   renameGroup(newName: string, group: GroupModel) {
+    console.log(`Renaming group: ${group.id} - ${group.name} to: ${newName.trim()}`);
     this.renameGroupById(group.id, newName.trim());
     console.log(`Group renamed to: ${ newName.trim() }`);
   }
 
-  deleteGroup(groupId: string) {
-    const groupIndex = this.groups.findIndex(g => g.name === groupId);
-    if (groupIndex === -1) return;
+  deleteGroup(groupToDelete: GroupModel) {
+    console.log(`Deleting group: ${groupToDelete.id} - ${groupToDelete.name}`);
 
-    this.groups.splice(groupIndex, 1);
-    console.log(`Group deleted: ${groupId}`);
+    const removeGroupById = (groups: GroupModel[]): GroupModel[] => {
+      return groups
+        .filter(group => group.id !== groupToDelete.id) // ✅ Remove only the exact group
+        .map(group => ({
+          ...group,
+          subGroups: group.subGroups ? removeGroupById(group.subGroups) : []
+        }));
+    };
+
+    this.groups = removeGroupById(this.groups);
+
+    console.log(`Group deleted successfully: ${groupToDelete.id}`);
   }
+
+
+  // deleteGroup(group: GroupModel) {
+  //   console.log(`Deleting selected group:\n\r ${group.id}`);
+  //   const groupIndex = this.groups.findIndex(g => g.id === group.id);
+  //   if (groupIndex === -1) return;
+
+  //   this.groups.splice(groupIndex, 1);
+  //   console.log(`Group deleted: ${group.id}`);
+  // }
 
   toggleGroup(group: GroupModel) : void {
     console.log(`Group toggled in model: ${ group.id }`);
@@ -63,17 +84,30 @@ export class RecursiveGroupListComponent {
     }
   }
 
-  renameGroupById = (groupId: string, newName: string): void => {
-    console.log(`In groupService, Group with id of ${groupId} renamed to: ${newName}`);
-    let updatedGroup: GroupModel | null = null;
-    const updatedGroups = this.groups.map(group => {
-      if (group.id === groupId) {
-        updatedGroup = Object.assign(Object.create(Object.getPrototypeOf(group)), group, { name: newName });
-        return updatedGroup;
-      }
-      return group;
-    }).filter((group): group is GroupModel => group !== null);
-  };
+  renameGroupById(groupId: string, newName: string): void {
+    console.log(`Renaming group with ID: ${groupId} to '${newName}'`);
+
+    let groupFound = false;
+
+    const updateGroupName = (groups: GroupModel[]) => {
+      groups.forEach(group => {
+        if (group.id === groupId) {
+          group.name = newName;
+          groupFound = true;
+        } else if (group.subGroups && group.subGroups.length > 0) {
+          updateGroupName(group.subGroups);
+        }
+      });
+    };
+
+    updateGroupName(this.groups);
+
+    if (!groupFound) {
+      console.warn(`Group with ID ${groupId} not found.`);
+    } else {
+      console.log(`Group renamed successfully.`);
+    }
+  }
 
   isGroup(group: GroupModel): boolean {
     return !!group.subGroups && (group.subGroups?.length ?? 0) > 0;
