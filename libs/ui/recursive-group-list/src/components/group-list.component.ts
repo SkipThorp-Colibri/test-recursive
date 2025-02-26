@@ -29,8 +29,35 @@ export class GroupListComponent {
     this.selectedGroupChange.emit(group);
   }
 
-  onGroupAdded = (newGroup: GroupModel) => {
-    console.log(`Adding a new group:\n\r ID: ${newGroup.id}\n\rNAME: ${newGroup.name}\n\rDESCRIPTION: ${newGroup.description}\n\rPARENT ID: ${newGroup.parentId}`);
-    this.groups.find(g => g.id === newGroup.parentId)?.subGroups?.push(newGroup);
+  onGroupAdded(newGroup: GroupModel) {
+    console.log(`onGroupAdded \n\r ID: ${newGroup.id}\n\rNAME: ${newGroup.name}\n\rPARENT ID: ${newGroup.parentId}\n\rDESCRIPTION: ${newGroup.description}`);
+    this.handleGroupAdded(newGroup);
+  }
+
+  private handleGroupAdded(newGroup: GroupModel) {
+    if (newGroup.parentId) {
+      const parentGroup = this.findGroupById(this.groups, newGroup.parentId);
+      if (parentGroup) {
+        parentGroup.subGroups = parentGroup.subGroups || [];
+        parentGroup.subGroups.push(newGroup);
+        return;
+      }
+    }
+    this.groups.push(newGroup);
+  }
+
+  private findGroupById(groups: GroupModel[], id: string): GroupModel | null {
+    for (const group of groups) {
+      if (group.id === id) {
+        return group;
+      }
+      if (group.subGroups) {
+        const found = this.findGroupById(group.subGroups, id);
+        if (found) {
+          return found;
+        }
+      }
+    }
+    return null;
   }
 }

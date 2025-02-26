@@ -44,27 +44,50 @@
         </div>
 
         <div class="mb-4">
-          <label class="block mb-1">Parent:</label>
-
+          <label for="parent">Select Parent Group:</label>
           <select
-            title="Parent"
+            id="parent"
+            class="w-full p-2 border rounded"
             [(ngModel)]="newGroup.parentId"
             name="parent"
-            class="w-full p-2 border rounded"
           >
-            @for (group of groups; track $index) { @if (isGroup(group) &&
-            group.subGroups) {
+            @for (group of groups; track $index) {
             <optgroup label="{{ group.name }}">
-              @for (subGroup of group.subGroups; track $index) {
-              <option [value]="subGroup.id">{{ subGroup.name }}</option>
+              <option [value]="group.id">{{ group.name }}</option>
+              @if (group.subGroups?.length) {
+              <ng-container
+                *ngTemplateOutlet="
+                  nestedOptions;
+                  context: { subGroups: group.subGroups, prefix: '- ' }
+                "
+              ></ng-container>
               }
             </optgroup>
-            } @else {
-            <option [value]="group.id">{{ group.name }}</option>
-            }
-            <option [value]="group.id">{{ group.name }}</option>
             }
           </select>
+
+          <!-- Recursive Template for Nested Options -->
+          <ng-template
+            #nestedOptions
+            let-subGroups="subGroups"
+            let-prefix="prefix"
+          >
+            @for (subGroup of subGroups; track $index) {
+            <option [value]="subGroup.id">
+              {{ prefix }}{{ subGroup.name }}
+            </option>
+            @if (subGroup.subGroups?.length) {
+            <ng-container
+              *ngTemplateOutlet="
+                nestedOptions;
+                context: {
+                  subGroups: subGroup.subGroups,
+                  prefix: prefix + '-  '
+                }
+              "
+            ></ng-container>
+            } }
+          </ng-template>
         </div>
 
         <!-- Buttons -->
