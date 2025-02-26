@@ -13,8 +13,14 @@ export class ContextMenuComponent {
   @Input() position = { x: 0, y: 0 };
 
   @Output() rename = new EventEmitter<{ newName: string; group: GroupModel }>();
+  @Output() addGroup = new EventEmitter<{ group: GroupModel }>();
   @Output() delete = new EventEmitter<{ group: GroupModel }>();
   @Output() close = new EventEmitter<void>();
+
+  onAddGroup = () => {
+    console.log(`onAddGroup \n\r ID: ${this.group.id}\n\rNAME: ${this.group.name}`);
+    this.addGroup.emit({ group: this.group });
+  }
 
   onRenameGroup = (): void => {
     if (!this.group) {

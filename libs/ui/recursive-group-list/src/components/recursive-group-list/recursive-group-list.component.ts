@@ -27,7 +27,7 @@ export class RecursiveGroupListComponent {
     this.selectedGroupChange.emit(group);
     console.log(`Right-clicked on: ${group.id} - ${group.name}`);
 
-    this.selectedGroup = group; // ✅ Assign the exact clicked group (No Deep Copy)
+    this.selectedGroup = group;
     this.contextMenuVisible = true;
     this.contextMenuPosition = { x: event.clientX, y: event.clientY };
 
@@ -45,7 +45,7 @@ export class RecursiveGroupListComponent {
 
     const removeGroupById = (groups: GroupModel[]): GroupModel[] => {
       return groups
-        .filter(group => group.id !== groupToDelete.id) // ✅ Remove only the exact group
+        .filter(group => group.id !== groupToDelete.id)
         .map(group => ({
           ...group,
           subGroups: group.subGroups ? removeGroupById(group.subGroups) : []

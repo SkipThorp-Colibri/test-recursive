@@ -1,41 +1,43 @@
-@if (groups) {
-  @for (group of groups; track $index) {
-    <div class="m-1">
-      <div
-        (click)="onGroupClick(group)"
-        [ngClass]="{'expanded cursor-pointer transition-colors duration-300': isExpanded(group), 'collapsed': !isExpanded(group), 'hover: cursor-pointer': isGroup(group)}"
-        class="group-node p-2.5 border-2 rounded-md flex items-center justify-start"
-        (contextmenu)="onRightClick($event, group)">
+@if (groups) { @for (group of groups; track $index) {
+<div class="m-1">
+  <div
+    (click)="onGroupClick(group)"
+    [ngClass]="{
+      'expanded cursor-pointer transition-colors duration-300':
+        isExpanded(group),
+      collapsed: !isExpanded(group),
+      'hover: cursor-pointer': isGroup(group)
+    }"
+    class="group-node p-2.5 border-2 rounded-md flex items-center justify-start"
+    (contextmenu)="onRightClick($event, group)"
+  >
+    @if (isGroup(group)) { @if (isExpanded(group)) {
+    <span><i class="fa fa-chevron-up"></i></span>
+    } @else {
+    <span><i class="fa fa-chevron-down"></i></span>
+    } }
 
-        @if (isGroup(group)) {
-          @if (isExpanded(group)) {
-            <span><i class="fa fa-chevron-up"></i></span>
-          }
-          @else {
-            <span><i class="fa fa-chevron-down"></i></span>
-          }
-        }
+    <span class="group-name ml-2.5 font-bold">{{ group.name }}</span>
+  </div>
 
-        <span class="group-name ml-2.5 font-bold">{{ group.name }}</span>
-      </div>
-
-      @if (isExpanded(group) && !!group.subGroups) {
-        <div class="group-subgroups ml-5 p-1.25">
-          <clx-recursive-group-list
-            [groups]="group.subGroups"
-            (selectedGroupChange)="selectedGroupChange.emit($event)">
-          </clx-recursive-group-list>
-        </div>
-      }
-    </div>
-
-    <clx-context-menu
-      [visible]="contextMenuVisible"
-      [position]="contextMenuPosition"
-      [group]="selectedGroup!"
-      (rename)="renameGroup($event.newName, $event.group)"
-      (delete)="deleteGroup($event.group)"
-      (close)="contextMenuVisible = false">
-    </clx-context-menu>
+  @if (isExpanded(group) && !!group.subGroups) {
+  <div class="group-subgroups ml-5 p-1.25">
+    <clx-recursive-group-list
+      [groups]="group.subGroups"
+      (selectedGroupChange)="selectedGroupChange.emit($event)"
+    >
+    </clx-recursive-group-list>
+  </div>
   }
-}
+</div>
+
+<clx-context-menu
+  [visible]="contextMenuVisible"
+  [position]="contextMenuPosition"
+  [group]="selectedGroup!"
+  (rename)="renameGroup($event.newName, $event.group)"
+  (delete)="deleteGroup($event.group)"
+  (close)="contextMenuVisible = false"
+>
+</clx-context-menu>
+} }

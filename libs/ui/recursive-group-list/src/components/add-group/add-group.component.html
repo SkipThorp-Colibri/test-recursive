@@ -1,1 +1,86 @@
-<p>add-group works!</p>
+<div class="relative">
+  <!-- Button to Open Modal -->
+  <div
+    class="w-12 h-12 flex items-center justify-center rounded-full border cursor-pointer place-self-center"
+    (click)="openModal()"
+  >
+    <i class="fas fa-plus text-xl"></i>
+  </div>
+
+  <!-- Modal Overlay -->
+  <div
+    *ngIf="isModalOpen"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+    (click)="closeModal()"
+  >
+    <div
+      class="bg-white p-6 rounded-lg w-96"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 class="text-lg font-semibold mb-4">Add Group</h2>
+
+      <!-- Form -->
+      <form (ngSubmit)="addGroup()">
+        <div class="mb-4">
+          <label class="block mb-1">Name:</label>
+          <input
+            title="Name"
+            type="text"
+            [(ngModel)]="newGroup.name"
+            name="name"
+            class="w-full p-2 border rounded"
+            required
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block mb-1">Description:</label>
+          <textarea
+            title="Description"
+            [(ngModel)]="newGroup.description"
+            name="description"
+            class="w-full p-2 border rounded"
+          ></textarea>
+        </div>
+
+        <div class="mb-4">
+          <label class="block mb-1">Parent:</label>
+
+          <select
+            title="Parent"
+            [(ngModel)]="newGroup.parentId"
+            name="parent"
+            class="w-full p-2 border rounded"
+          >
+            @for (group of groups; track $index) { @if (isGroup(group) &&
+            group.subGroups) {
+            <optgroup label="{{ group.name }}">
+              @for (subGroup of group.subGroups; track $index) {
+              <option [value]="subGroup.id">{{ subGroup.name }}</option>
+              }
+            </optgroup>
+            } @else {
+            <option [value]="group.id">{{ group.name }}</option>
+            }
+            <option [value]="group.id">{{ group.name }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex justify-end space-x-2">
+          <button
+            type="button"
+            class="px-4 py-2 border rounded"
+            (click)="closeModal()"
+          >
+            Cancel
+          </button>
+          <button type="submit" class="px-4 py-2 border rounded">
+            Add Group
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

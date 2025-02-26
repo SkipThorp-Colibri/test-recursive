@@ -1,9 +1,16 @@
 @if (selectedGroup) {
-    <clx-group-details [selectedGroup]="selectedGroup"></clx-group-details>
+<clx-group-details [selectedGroup]="selectedGroup"></clx-group-details>
+} @if (groups) {
+<div>
+  <clx-recursive-group-list
+    [groups]="groups"
+    (selectedGroupChange)="onSelectedGroupChange($event)"
+  ></clx-recursive-group-list>
+</div>
 }
 
-@if (groups) {
-    <div>
-        <clx-recursive-group-list [groups]="groups" (selectedGroupChange)="onSelectedGroupChange($event)"></clx-recursive-group-list>
-    </div>
-}
+<clx-add-group
+  [groups]="groups"
+  (groupAdded)="onGroupAdded($event.group)"
+  class="m-1"
+></clx-add-group>
