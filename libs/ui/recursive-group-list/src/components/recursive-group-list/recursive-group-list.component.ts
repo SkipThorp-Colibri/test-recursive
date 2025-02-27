@@ -46,12 +46,11 @@ export class RecursiveGroupListComponent {
     console.log(`Deleting group: ${groupToDelete.id} - ${groupToDelete.name}`);
 
     const removeGroupById = (groups: GroupModel[]): GroupModel[] => {
-      return groups
-        .filter(group => group.id !== groupToDelete.id)
-        .map(group => ({
-          ...group,
-          subGroups: group.subGroups ? removeGroupById(group.subGroups) : []
-        }));
+      const groupFound = groups.find(group => group.id === groupToDelete.id);
+      if (groupFound) {
+        groups.splice(groups.indexOf(groupFound), 1);
+      }
+      return groups;
     };
 
     this.groups = removeGroupById(this.groups);
