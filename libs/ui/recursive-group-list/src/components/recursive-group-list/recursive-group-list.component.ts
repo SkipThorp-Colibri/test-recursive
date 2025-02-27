@@ -15,7 +15,9 @@ export class RecursiveGroupListComponent {
 
   onGroupClick(group: GroupModel) {
     this.selectedGroupChange.emit(group);
-    this.toggleGroup(group);
+    if (this.isGroup(group) && group.subGroups) {
+      this.toggleGroup(group);
+    }
   }
 
   selectedGroup: GroupModel | undefined;
