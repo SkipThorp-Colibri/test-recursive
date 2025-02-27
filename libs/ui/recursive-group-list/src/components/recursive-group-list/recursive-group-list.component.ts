@@ -20,7 +20,7 @@ export class RecursiveGroupListComponent {
     }
   }
 
-  selectedGroup: GroupModel | undefined;
+  selectedGroup: GroupModel | undefined = undefined;
   contextMenuVisible = false;
   contextMenuPosition = { x: 0, y: 0 };
 
