@@ -14,6 +14,7 @@ export class ContextMenuComponent {
 
   @Output() rename = new EventEmitter<{ newName: string; group: GroupModel }>();
   @Output() addGroup = new EventEmitter<{ group: GroupModel }>();
+  @Output() moveGroupEvent = new EventEmitter<{ movingGroup: GroupModel }>();
   @Output() delete = new EventEmitter<{ group: GroupModel }>();
   @Output() close = new EventEmitter<void>();
 
@@ -21,6 +22,11 @@ export class ContextMenuComponent {
     console.log(`onAddGroup \n\r ID: ${this.group.id}\n\rNAME: ${this.group.name}`);
     this.addGroup.emit({ group: this.group });
   }
+
+  moveGroup = (group: GroupModel) => {
+    console.log(`Context menu: Move group selected for ${group.id} - ${group.name}`);
+    this.moveGroupEvent.emit({ movingGroup: group });
+  };
 
   onRenameGroup = (): void => {
     if (!this.group) {

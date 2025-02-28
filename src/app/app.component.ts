@@ -14,6 +14,7 @@ export class AppComponent {
   @Input() selectedGroupChange = signal<GroupModel | null>(null);
 
   public groups: GroupModel[] = [];
+  public fullGroupsList: GroupModel[] = [];
   public loading = signal<boolean>(false);
   public title = 'test-recursive';
 
@@ -125,10 +126,14 @@ export class AppComponent {
           ]
         )
       ];
-
+      console.log('In the Mock Groups:', this.groups);
+      this.fullGroupsList = [...this.groups];
+      console.log('In the Mock Full Groups:', this.fullGroupsList);
       this.loading.set(false);
     }, 1000);
+
   }
+
 
   private createGroup = (
     id: string = crypto.randomUUID.toString(),

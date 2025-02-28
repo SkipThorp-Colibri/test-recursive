@@ -36,8 +36,16 @@
   [position]="contextMenuPosition"
   [group]="selectedGroup!"
   (rename)="renameGroup($event.newName, $event.group)"
+  (moveGroupEvent)="onMoveGroup($event.movingGroup)"
   (delete)="deleteGroup($event.group)"
   (close)="contextMenuVisible = false"
 >
 </clx-context-menu>
-} }
+
+} } @if (showMoveModal) {
+<clx-move-group
+  [groups]="groups"
+  [movingGroup]="movingGroup"
+  (updateGroups)="onUpdateGroups($event.updatedGroups)"
+></clx-move-group>
+}

@@ -2,16 +2,41 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { GroupModel } from '../../models/group-model';
+import { MoveGroupComponent } from "../move-group/move-group.component";
 
 @Component({
   selector: 'clx-recursive-group-list',
-  imports: [CommonModule, ContextMenuComponent],
+  imports: [CommonModule, ContextMenuComponent, MoveGroupComponent],
   templateUrl: './recursive-group-list.component.html',
 })
 export class RecursiveGroupListComponent {
 
   @Input() groups: GroupModel[] = [];
+  @Input() fullGroupsList: GroupModel[] = [];
   @Output() selectedGroupChange = new EventEmitter<GroupModel>();
+  @Output() moveGroup = new EventEmitter<{ movingGroup: GroupModel, fullList: GroupModel[] }>();
+  @Output() groupsForMove = new EventEmitter<{ groups: GroupModel[] }>();
+
+  movingGroup!: GroupModel;
+  showMoveModal: boolean = false;
+  groupsList!: GroupModel[];
+
+  onMoveGroup = (group: GroupModel) => {
+    console.log('In RGL - Received moving group: ', group.id + group.name);
+    console.log('In RGL - groups: ', this.groups);
+    console.log('In RGL - fullGroupsList: ', this.fullGroupsList);
+    this.movingGroup = group;
+    this.groupsList = this.fullGroupsList;
+    this.showMoveModal = true;
+    console.log(`In RGL - Moving group set: ${this.movingGroup.id} - ${this.movingGroup.name}`);
+    this.moveGroup.emit({ movingGroup: this.movingGroup, fullList: this.groupsList });
+  };
+
+  onUpdateGroups = (updatedGroups: GroupModel[]) => {
+    console.log('Updating groups after move operation', updatedGroups);
+    this.groups = updatedGroups;
+    this.showMoveModal = false;
+  };
 
   onGroupClick(group: GroupModel) {
     this.selectedGroupChange.emit(group);

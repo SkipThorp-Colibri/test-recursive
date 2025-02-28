@@ -1,0 +1,45 @@
+@if (isModalOpen && groups) {
+
+<!-- Modal Overlay -->
+<div
+  class="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50"
+  (click)="closeModal()"
+>
+  <div class="bg-white p-6 rounded-lg w-96">
+    <h2 class="text-lg font-semibold mb-4">Move Group</h2>
+    <p>{{ groups | json }}</p>
+
+    @for (group of groups; track $index) {
+    <p>{{ group.name }}</p>
+    <div class="m-1">
+      <div (click)="setTargetGroup(group)">
+        <span class="group-name ml-2.5 font-bold">{{ group.name }}</span>
+      </div>
+
+      @if (!!group.subGroups && group.subGroups.length > 0) {
+      <div class="group-subgroups ml-5 p-1.25">
+        <clx-move-group [groups]="group.subGroups"> </clx-move-group>
+      </div>
+      }
+    </div>
+    }
+    <!-- Buttons -->
+    <div class="flex justify-end space-x-2">
+      <button
+        type="button"
+        class="px-4 py-2 border rounded hover: cursor-pointer"
+        (click)="closeModal()"
+      >
+        Cancel
+      </button>
+      <!-- <button
+        type="button"
+        (click)="moveGroup(movingGroup)"
+        class="px-4 py-2 border rounded"
+      >
+        Move Group
+      </button> -->
+    </div>
+  </div>
+</div>
+}
