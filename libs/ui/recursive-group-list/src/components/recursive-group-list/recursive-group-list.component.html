@@ -1,5 +1,11 @@
 @if (groups) { @for (group of groups; track $index) {
-<div class="m-1">
+<div
+  class="m-1"
+  [dndDraggable]="{
+    movingGroup: group,
+    data: group
+  }"
+>
   <div
     (click)="onGroupClick(group)"
     [ngClass]="{
@@ -10,6 +16,8 @@
     }"
     class="group-node p-2.5 border-2 rounded-md flex items-center justify-start"
     (contextmenu)="onRightClick($event, group)"
+    dndDropzone
+    (dndDrop)="onDrop($event, group)"
   >
     @if (isGroup(group)) { @if (isExpanded(group)) {
     <span><i class="fa fa-chevron-up"></i></span>
@@ -30,6 +38,7 @@
   </div>
   }
 </div>
+} }
 
 <clx-context-menu
   [visible]="contextMenuVisible"
@@ -41,11 +50,3 @@
   (close)="contextMenuVisible = false"
 >
 </clx-context-menu>
-
-} } @if (showMoveModal) {
-<clx-move-group
-  [groups]="groups"
-  [movingGroup]="movingGroup"
-  (updateGroups)="onUpdateGroups($event.updatedGroups)"
-></clx-move-group>
-}

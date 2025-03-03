@@ -19,7 +19,7 @@ import { AddGroupComponent } from './add-group/add-group.component';
 export class GroupListComponent {
 
   @Input() groups: GroupModel[] = [];
-
+  @Input() fullGroupsList: GroupModel[] = [];
   @Output() selectedGroupChange = new EventEmitter<GroupModel>();
 
   selectedGroup: GroupModel | undefined;
