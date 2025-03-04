@@ -26,6 +26,13 @@ export class AppComponent {
     console.log('group change:', group);
   }
 
+  sortGroupsRecursively = (groups: GroupModel[]): GroupModel[] => {
+    return groups.sort((a, b) => a.name.localeCompare(b.name)).map(group => ({
+      ...group,
+      subGroups: group.subGroups ? this.sortGroupsRecursively(group.subGroups) : []
+    }));
+  };
+
   // Simulate fetching groups from an API
   private fetchGroups = (): void => {
     this.loading.set(true);
@@ -96,14 +103,14 @@ export class AppComponent {
                   'Print Team A',
                   'Print media Team A',
                   false,
-                  '996a577f-5477-46eb-9d1b-5f6a27780967',
+                  '081495e4-875e-4a15-ab5a-3c19705efb17',
                 ),
                 this.createGroup(
                   '496434de-222c-47bf-9f69-191386f3ce79',
                   'Print Team B',
                   'Print media Team B',
                   false,
-                  '996a577f-5477-46eb-9d1b-5f6a27780967',
+                  '081495e4-875e-4a15-ab5a-3c19705efb17',
                   [
                     this.createGroup(
                       'fe89d7f2-5767-4991-abd2-197be8f1c143',
@@ -126,6 +133,7 @@ export class AppComponent {
           ]
         )
       ];
+      this.sortGroupsRecursively(this.groups);
       console.log('In the Mock Groups:', this.groups);
       this.fullGroupsList = [...this.groups];
       console.log('In the Mock Full Groups:', this.fullGroupsList);
