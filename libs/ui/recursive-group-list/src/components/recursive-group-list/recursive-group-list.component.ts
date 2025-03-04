@@ -24,6 +24,46 @@ export class RecursiveGroupListComponent {
   groupsList!: GroupModel[];
   targetGroup!: GroupModel;
 
+  removeGroup = (groupToRemove: GroupModel) => {
+    console.log(`groupToRemove: ${groupToRemove.id} - ${groupToRemove.name}`);
+
+    // Find the topmost parent of the group
+    const findTopMostParent = (groupList: GroupModel[], targetId: string, parentId?: string): GroupModel | null => {
+      for (const group of groupList) {
+        if (group.id === targetId) {
+          return parentId ? this.findGroupById(this.groups, parentId) : null;
+        }
+        if (group.subGroups) {
+          const parent = findTopMostParent(group.subGroups, targetId, group.id);
+          if (parent) return parent;
+        }
+      }
+      return null;
+    };
+
+    // Locate the top-most level to start the removal process
+    const topMostParent = findTopMostParent(this.groups, groupToRemove.id, groupToRemove.parentId);
+    const targetGroupList = topMostParent ? topMostParent.subGroups : this.groups;
+
+    // Remove the group from the identified level
+    const removeRecursive = (groupList: GroupModel[]): boolean => {
+      const index = groupList.findIndex(g => g.id === groupToRemove.id);
+      if (index !== -1) {
+        groupList.splice(index, 1);
+        console.log(`Group ${groupToRemove.id} removed successfully`);
+        return true;
+      }
+      return groupList.some(group => group.subGroups && removeRecursive(group.subGroups));
+    };
+
+    if (!removeRecursive(targetGroupList!)) {
+      console.warn(`Group ${groupToRemove.id} not found in groups list.`);
+    }
+
+    this.sortGroupsRecursively(this.groups);
+    console.log('Updated groups list:', this.groups);
+  };
+
 
   onDrop(event: any, targetGrp: GroupModel) {
     const draggedGroup = event.data.movingGroup; // The group being dragged
@@ -46,32 +86,6 @@ export class RecursiveGroupListComponent {
     // Move the dragged group into the dropped-on group
     targetGrp.subGroups.push(draggedGroup);
   }
-
-  removeGroup = (groupToRemove: GroupModel) => {
-    console.log(`groupToRemove: ${groupToRemove.id} - ${groupToRemove.name}`);
-    console.log('from parent Group: ', this.findGroupById(this.groups, groupToRemove.parentId!));
-
-    const removeRecursive = (groupList: GroupModel[]): boolean => {
-      // Check if the group exists at the current level
-      const index = groupList.findIndex(g => g.id === groupToRemove.id);
-      if (index !== -1) {
-        groupList.splice(index, 1);
-        console.log(`Group ${groupToRemove.id} removed successfully`);
-        return true;
-      }
-
-      // If not found, search recursively in subGroups
-      return groupList.some(group => group.subGroups && removeRecursive(group.subGroups));
-    };
-
-    if (!removeRecursive(this.groups)) {
-      console.warn(`Group ${groupToRemove.id} not found in groups list.`);
-    }
-
-    this.sortGroupsRecursively(this.groups);
-
-    console.log('Updated groups list:', this.groups);
-  };
 
   sortGroupsRecursively = (groups: GroupModel[]): GroupModel[] => {
     return groups.sort((a, b) => a.name.localeCompare(b.name)).map(group => ({
