@@ -27,13 +27,13 @@ export class RecursiveGroupListComponent {
     console.log(`groupToRemove: ${groupToRemove.id} - ${groupToRemove.name}`);
 
     // Find the topmost parent of the group
-    const findTopMostParent = (groupList: GroupModel[], targetId: string, parentId?: string): GroupModel | null => {
+    const findTopMostParent = (groupList: GroupModel[], removeGroupId: string, parentId?: string): GroupModel | null => {
       for (const group of groupList) {
-        if (group.id === targetId) {
+        if (group.id === removeGroupId) {
           return parentId ? this.findGroupById(this.groups, parentId) : null;
         }
         if (group.subGroups) {
-          const parent = findTopMostParent(group.subGroups, targetId, group.id);
+          const parent = findTopMostParent(group.subGroups, removeGroupId, group.id);
           if (parent) return parent;
         }
       }
@@ -64,26 +64,26 @@ export class RecursiveGroupListComponent {
   };
 
 
-  onDrop(event: any, targetGrp: GroupModel) {
+  onDrop(event: any, targetGroup: GroupModel) {
     const draggedGroup = event.data.movingGroup;
     console.log('In RGL - Moving group: ', draggedGroup);
-    console.log('In RGL - Target group: ', targetGrp);
+    console.log('In RGL - Target group: ', targetGroup);
 
     // Prevent dropping a group into itself
-    if (draggedGroup === targetGrp) {
+    if (draggedGroup === targetGroup) {
       return;
     }
 
     // Find the parent list of the dragged group and remove it
     this.removeGroup(draggedGroup);
 
-    // Ensure the targetGrp has a subGroups array
-    if (!targetGrp.subGroups) {
-      targetGrp.subGroups = [];
+    // Ensure the targetGroup has a subGroups array
+    if (!targetGroup.subGroups) {
+      targetGroup.subGroups = [];
     }
 
     // Move the dragged group into the dropped-on group
-    targetGrp.subGroups.push(draggedGroup);
+    targetGroup.subGroups.push(draggedGroup);
   }
 
   sortGroupsRecursively = (groups: GroupModel[]): GroupModel[] => {
