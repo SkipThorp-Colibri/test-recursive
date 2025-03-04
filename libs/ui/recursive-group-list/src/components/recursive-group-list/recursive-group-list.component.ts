@@ -12,7 +12,6 @@ import { GroupModel } from '../../models/group-model';
 })
 export class RecursiveGroupListComponent {
 
-
   @Input() groups: GroupModel[] = [];
   @Input() fullGroupsList: GroupModel[] = [];
   @Output() selectedGroupChange = new EventEmitter<GroupModel>();
