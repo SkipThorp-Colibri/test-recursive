@@ -36,7 +36,7 @@ export class RecursiveGroupListComponent {
     }
 
     // Find the parent list of the dragged group and remove it
-    this.removeGroupFromParent(draggedGroup);
+    this.removeGroup(draggedGroup);
 
     // Ensure the targetGrp has a subGroups array
     if (!targetGrp.subGroups) {
@@ -47,40 +47,73 @@ export class RecursiveGroupListComponent {
     targetGrp.subGroups.push(draggedGroup);
   }
 
-  // Helper function to find and remove a group from its parent list
-  removeGroupFromParent = (draggedGroup: GroupModel) => {
-    // console.log('In RGL - Removing group from parent: ', draggedGroup);
-    // const draggedGroupId = draggedGroup.id;
-    // const targetGroupId = this.targetGroup.id;
+  removeGroup = (groupToRemove: GroupModel) => {
+    console.log(`groupToRemove: ${groupToRemove.id} - ${groupToRemove.name}`);
+    console.log('from parent Group: ', this.findGroupById(this.groups, groupToRemove.parentId!));
+
     const removeRecursive = (groupList: GroupModel[]): boolean => {
-      const index = groupList.findIndex(g => g.id === draggedGroup.id);
+      // Check if the group exists at the current level
+      const index = groupList.findIndex(g => g.id === groupToRemove.id);
       if (index !== -1) {
         groupList.splice(index, 1);
+        console.log(`Group ${groupToRemove.id} removed successfully`);
         return true;
       }
-      console.log('In RGL - groupList', groupList);
+
+      // If not found, search recursively in subGroups
       return groupList.some(group => group.subGroups && removeRecursive(group.subGroups));
     };
-    // console.log('In RGL - Removing group from parent: ', draggedGroup);
-    removeRecursive(this.groups);
 
-    console.log('In RGL - New fullGroupsList list: ', this.groups);
-  }
+    if (!removeRecursive(this.groups)) {
+      console.warn(`Group ${groupToRemove.id} not found in groups list.`);
+    }
 
-  // private findGroupById(groups: GroupModel[], id: string): GroupModel | null {
-  //   for (const group of groups) {
-  //     if (group.id === id) {
-  //       return group;
+    this.sortGroupsRecursively(this.groups);
+
+    console.log('Updated groups list:', this.groups);
+  };
+
+  sortGroupsRecursively = (groups: GroupModel[]): GroupModel[] => {
+    return groups.sort((a, b) => a.name.localeCompare(b.name)).map(group => ({
+      ...group,
+      subGroups: group.subGroups ? this.sortGroupsRecursively(group.subGroups) : []
+    }));
+  };
+
+  // // Helper function to find and remove a group from its parent list
+  // removeGroupFromParent = (draggedGroup: GroupModel) => {
+  //   console.log('In RGL - Removing group from parent: ', draggedGroup);
+  //   // const draggedGroupId = draggedGroup.id;
+  //   // const targetGroupId = this.targetGroup.id;
+  //   const removeRecursive = (groupList: GroupModel[]): boolean => {
+  //     const index = groupList.findIndex(g => g.id === draggedGroup.id);
+  //     if (index !== -1) {
+  //       groupList.splice(index, 1);
+  //       return true;
   //     }
-  //     if (group.subGroups) {
-  //       const found = this.findGroupById(group.subGroups, id);
-  //       if (found) {
-  //         return found;
-  //       }
-  //     }
-  //   }
-  //   return null;
+  //     console.log('In RGL - groupList', groupList);
+  //     return groupList.some(group => group.subGroups && removeRecursive(group.subGroups));
+  //   };
+  //   // console.log('In RGL - Removing group from parent: ', draggedGroup);
+  //   removeRecursive(this.groups);
+
+  //   console.log('In RGL - New fullGroupsList list: ', this.groups);
   // }
+
+  private findGroupById(groups: GroupModel[], id: string): GroupModel | null {
+    for (const group of groups) {
+      if (group.id === id) {
+        return group;
+      }
+      if (group.subGroups) {
+        const found = this.findGroupById(group.subGroups, id);
+        if (found) {
+          return found;
+        }
+      }
+    }
+    return null;
+  }
 
   onMoveGroup = (group: GroupModel) => {
     console.log('In RGL - Received moving group: ', group.id + group.name);
