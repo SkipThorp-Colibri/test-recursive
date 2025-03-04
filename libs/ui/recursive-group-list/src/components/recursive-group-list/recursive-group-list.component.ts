@@ -66,7 +66,7 @@ export class RecursiveGroupListComponent {
 
 
   onDrop(event: any, targetGrp: GroupModel) {
-    const draggedGroup = event.data.movingGroup; // The group being dragged
+    const draggedGroup = event.data.movingGroup;
     console.log('In RGL - Moving group: ', draggedGroup);
     console.log('In RGL - Target group: ', targetGrp);
 
@@ -93,26 +93,6 @@ export class RecursiveGroupListComponent {
       subGroups: group.subGroups ? this.sortGroupsRecursively(group.subGroups) : []
     }));
   };
-
-  // // Helper function to find and remove a group from its parent list
-  // removeGroupFromParent = (draggedGroup: GroupModel) => {
-  //   console.log('In RGL - Removing group from parent: ', draggedGroup);
-  //   // const draggedGroupId = draggedGroup.id;
-  //   // const targetGroupId = this.targetGroup.id;
-  //   const removeRecursive = (groupList: GroupModel[]): boolean => {
-  //     const index = groupList.findIndex(g => g.id === draggedGroup.id);
-  //     if (index !== -1) {
-  //       groupList.splice(index, 1);
-  //       return true;
-  //     }
-  //     console.log('In RGL - groupList', groupList);
-  //     return groupList.some(group => group.subGroups && removeRecursive(group.subGroups));
-  //   };
-  //   // console.log('In RGL - Removing group from parent: ', draggedGroup);
-  //   removeRecursive(this.groups);
-
-  //   console.log('In RGL - New fullGroupsList list: ', this.groups);
-  // }
 
   private findGroupById(groups: GroupModel[], id: string): GroupModel | null {
     for (const group of groups) {
