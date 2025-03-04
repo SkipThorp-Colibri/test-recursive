@@ -108,17 +108,6 @@ export class RecursiveGroupListComponent {
     return null;
   }
 
-  onMoveGroup = (group: GroupModel) => {
-    console.log('In RGL - Received moving group: ', group.id + group.name);
-    console.log('In RGL - groups: ', this.groups);
-    console.log('In RGL - fullGroupsList: ', this.fullGroupsList);
-    this.movingGroup = group;
-    this.groupsList = this.fullGroupsList;
-    this.showMoveModal = true;
-    console.log(`In RGL - Moving group set: ${this.movingGroup.id} - ${this.movingGroup.name}`);
-    this.moveGroup.emit({ movingGroup: this.movingGroup, fullList: this.groupsList });
-  };
-
   onUpdateGroups = (updatedGroups: GroupModel[]) => {
     console.log('Updating groups after move operation', updatedGroups);
     this.groups = updatedGroups;
