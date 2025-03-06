@@ -2,7 +2,7 @@ import { Component, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { GroupListComponent } from '../../libs/ui/recursive-group-list/src/components/group-list.component';
-import { GroupService } from '../services/group.service';
+import { GroupService } from '../../libs/ui/recursive-group-list/src/services/group.service';
 import { GroupModel } from '../models';
 
 @Component({
@@ -13,8 +13,7 @@ import { GroupModel } from '../models';
 export class AppComponent {
   @Input() selectedGroupChange = signal<GroupModel | null>(null);
 
-  public groups: GroupModel[] = [];
-  public fullGroupsList: GroupModel[] = [];
+  public groups = signal<GroupModel[]>([]);
   public loading = signal<boolean>(false);
   public title = 'test-recursive';
 
@@ -29,11 +28,11 @@ export class AppComponent {
     }));
   };
 
-  // Simulate fetching groups from an API
+  // Simulate fetching groups from an API or receiving them from a parent component as a signal
   private fetchGroups = (): void => {
     this.loading.set(true);
     setTimeout(() => {
-      this.groups = [
+      const mockGroups = [
         this.createGroup(
           'c9151c1c-868d-4781-84c3-e8a2df07d2e0',
           'Engineering',
@@ -129,15 +128,13 @@ export class AppComponent {
           ]
         )
       ];
-      this.sortGroupsRecursively(this.groups);
-      console.log('In the Mock Groups:', this.groups);
-      this.fullGroupsList = [...this.groups];
-      console.log('In the Mock Full Groups:', JSON.stringify(this.fullGroupsList));
+      this.groups.set(mockGroups);
+      this.sortGroupsRecursively(this.groups());
+      console.log('In the Mock Groups:', this.groups());
       this.loading.set(false);
     }, 1000);
 
   }
-
 
   private createGroup = (
     id: string = crypto.randomUUID.toString(),

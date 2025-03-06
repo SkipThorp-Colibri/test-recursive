@@ -1,11 +1,5 @@
-@if (groups) { @for (group of groups; track $index) {
-<div
-  class="m-1"
-  [dndDraggable]="{
-    movingGroup: group,
-    data: group
-  }"
->
+@if (groups()) { @for (group of groups(); track $index) {
+<div class="m-1 example-list" cdkDropList (cdkDropListDropped)="onDrop($event)">
   <div
     (click)="onGroupClick(group)"
     [ngClass]="{
@@ -14,10 +8,9 @@
       collapsed: !isExpanded(group),
       'hover: cursor-pointer': isGroup(group)
     }"
-    class="group-node p-2.5 border-2 rounded-md flex items-center justify-start"
+    class="example-box p-2.5 border-2 rounded-md flex items-center justify-start"
     (contextmenu)="onRightClick($event, group)"
-    dndDropzone
-    (dndDrop)="onDrop($event, group)"
+    cdkDrag
   >
     @if (isGroup(group)) { @if (isExpanded(group)) {
     <span><i class="fa fa-chevron-up"></i></span>
@@ -30,10 +23,7 @@
 
   @if (isExpanded(group) && !!group.subGroups) {
   <div class="group-subgroups ml-5 p-1.25">
-    <clx-recursive-group-list
-      [groups]="group.subGroups"
-      (selectedGroupChange)="selectedGroupChange.emit($event)"
-    >
+    <clx-recursive-group-list [groups]="group.subGroups || []">
     </clx-recursive-group-list>
   </div>
   }

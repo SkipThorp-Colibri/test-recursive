@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { GroupModel } from '../models';
+import { GroupModel } from '../models/group-model';
 
 @Injectable({
   providedIn: 'root'
@@ -9,39 +9,6 @@ export class GroupService {
   public groups = signal<GroupModel[]>([]);
   public loading = signal<boolean>(false);
   public selectedGroup = signal<GroupModel>(this.getGroup());
-
-  constructor() {
-  }
-
-
-
-  // Helper function to create a group with nested groups
-
-
-  // setSelectedGroup(group: Group): void {
-  //   console.log(`Group toggled in service: ${group.id}`);
-  //   this.selectedGroup.set(group);
-  // }
-
-
-
-  // onRenameGroup(newName: string): void {
-
-  //   const group = this.selectedGroup();
-  //   console.log(`Group with id of ${group?.id} renamed to: ${newName}`);
-  //   if (group) {
-  //     if (newName && newName.trim()) {
-  //       group.name = newName.trim();
-  //       const groupName = this.renameGroup(group, newName);
-  //       console.log(`Group renamed to: ${groupName}`);
-
-  //     } else {
-  //       console.log('Rename canceled or invalid input');
-  //     }
-
-  //   }
-
-  // }
 
   // Rename a group by updating its name within the groups signal
   renameGroup = (group: GroupModel, newName: string): GroupModel | null => {
@@ -74,14 +41,14 @@ export class GroupService {
   onMove(groupId: string, newParentId: string, groups: GroupModel[]) {
     const groupToMove = this.findGroupById(groupId, groups);
     if (groupToMove) {
-        this.removeGroupById(groupId, groups);
-        const newParent = this.findGroupById(newParentId, groups);
-        if (newParent) {
-            newParent.subGroups = newParent.subGroups || [];
-            newParent.subGroups.push(groupToMove);
-        }
+      this.removeGroupById(groupId, groups);
+      const newParent = this.findGroupById(newParentId, groups);
+      if (newParent) {
+        newParent.subGroups = newParent.subGroups || [];
+        newParent.subGroups.push(groupToMove);
+      }
     }
-}
+  }
 
   private findGroupById(id: string, groups: GroupModel[]): GroupModel | null {
     for (let group of groups) {
@@ -109,7 +76,7 @@ export class GroupService {
     return false;
   }
 
-  getGroup(id: string = '', newName: string = '', description: string = '', expanded: boolean = false, parentId: string = '', subGroups: GroupModel[] = []) : GroupModel {
+  getGroup(id: string = '', newName: string = '', description: string = '', expanded: boolean = false, parentId: string = '', subGroups: GroupModel[] = []): GroupModel {
     return {
       id: id,
       name: newName,
