@@ -51,6 +51,7 @@ export class MoveGroupComponent implements OnChanges {
 
     // Find the index of the group to remove
     const parentGroup = this.groups.find(g => g.id === movingGroup.parentId);
+    console.log(`Parent group: ${parentGroup?.id} - ${parentGroup?.name}`);
     if (parentGroup) {
       parentGroup.subGroups = parentGroup.subGroups?.filter(g => g.id !== movingGroup.id);
     } else {
