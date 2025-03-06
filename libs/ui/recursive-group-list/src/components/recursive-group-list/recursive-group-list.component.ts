@@ -1,5 +1,5 @@
 import { DndDropEvent, DndModule } from 'ngx-drag-drop';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, input, model } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { GroupModel } from '../../models/group-model';
@@ -11,9 +11,9 @@ import { GroupModel } from '../../models/group-model';
   templateUrl: './recursive-group-list.component.html',
 })
 export class RecursiveGroupListComponent {
-
-  @Input() groups: GroupModel[] = [];
-  @Input() fullGroupsList: GroupModel[] = [];
+  public currentGroup = input<GroupModel>();
+  public groups = model<GroupModel[]>([])
+  public fullGroupsList = input<GroupModel[]>([]) 
   @Output() selectedGroupChange = new EventEmitter<GroupModel>();
   @Output() moveGroup = new EventEmitter<{ movingGroup: GroupModel, fullList: GroupModel[] }>();
   @Output() groupsForMove = new EventEmitter<{ groups: GroupModel[] }>();
@@ -30,7 +30,7 @@ export class RecursiveGroupListComponent {
     const findTopMostParent = (groupList: GroupModel[], removeGroupId: string, parentId?: string): GroupModel | null => {
       for (const group of groupList) {
         if (group.id === removeGroupId) {
-          return parentId ? this.findGroupById(this.groups, parentId) : null;
+          return parentId ? this.findGroupById(this.groups(), parentId) : null;
         }
         if (group.subGroups) {
           const parent = findTopMostParent(group.subGroups, removeGroupId, group.id);
@@ -41,8 +41,8 @@ export class RecursiveGroupListComponent {
     };
 
     // Locate the top-most level to start the removal process
-    const topMostParent = findTopMostParent(this.groups, groupToRemove.id, groupToRemove.parentId);
-    const targetGroupList = topMostParent ? topMostParent.subGroups : this.groups;
+    const topMostParent = findTopMostParent(this.groups(), groupToRemove.id, groupToRemove.parentId);
+    const targetGroupList = topMostParent ? topMostParent.subGroups : this.groups();
 
     // Remove the group from the identified level
     const removeRecursive = (groupList: GroupModel[]): boolean => {
@@ -59,13 +59,14 @@ export class RecursiveGroupListComponent {
       console.warn(`Group ${groupToRemove.id} not found in groups list.`);
     }
 
-    this.sortGroupsRecursively(this.groups);
-    console.log('Updated groups list:', this.groups);
+    this.sortGroupsRecursively(this.groups());
+    console.log('Updated groups list:', this.groups());
   };
 
 
   onDrop(event: any, targetGroup: GroupModel) {
     const draggedGroup = event.data.movingGroup;
+    console.log('In RGL - Current', this.currentGroup()?.name);
     console.log('In RGL - Moving group: ', draggedGroup);
     console.log('In RGL - Target group: ', targetGroup);
 
@@ -110,7 +111,7 @@ export class RecursiveGroupListComponent {
 
   onUpdateGroups = (updatedGroups: GroupModel[]) => {
     console.log('Updating groups after move operation', updatedGroups);
-    this.groups = updatedGroups;
+    this.groups.set(updatedGroups);
     this.showMoveModal = false;
   };
 
@@ -154,7 +155,7 @@ export class RecursiveGroupListComponent {
       return groups;
     };
 
-    this.groups = removeGroupById(this.groups);
+    this.groups.set(removeGroupById(this.groups()));
 
     console.log(`Group deleted successfully: ${groupToDelete.id}`);
   }
@@ -186,7 +187,7 @@ export class RecursiveGroupListComponent {
       });
     };
 
-    updateGroupName(this.groups);
+    updateGroupName(this.groups());
 
     if (!groupFound) {
       console.warn(`Group with ID ${groupId} not found.`);
