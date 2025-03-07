@@ -58,7 +58,10 @@
               <ng-container
                 *ngTemplateOutlet="
                   nestedOptions;
-                  context: { subGroups: group.subGroups, prefix: '- ' }
+                  context: {
+                    subGroups: group.subGroups,
+                    prefix: '&nbsp;&nbsp;'
+                  }
                 "
               ></ng-container>
               }
@@ -82,7 +85,7 @@
                 nestedOptions;
                 context: {
                   subGroups: subGroup.subGroups,
-                  prefix: prefix + '-  '
+                  prefix: prefix + '&nbsp;&nbsp;'
                 }
               "
             ></ng-container>
