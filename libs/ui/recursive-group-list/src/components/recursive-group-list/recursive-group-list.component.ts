@@ -16,14 +16,8 @@ export class RecursiveGroupListComponent {
   @Output() selectedGroupChange = new EventEmitter<GroupModel>();
   @Output() moveGroup = new EventEmitter<{ movingGroup: GroupModel, targetGroup: GroupModel }>();
 
-  movingGroup!: GroupModel;
-  showMoveModal: boolean = false;
-  groupsList!: GroupModel[];
-  targetGroup!: GroupModel;
-
   onDrop(event: any, targetGroup: GroupModel) {
     const draggedGroup = event.data.movingGroup;
-    // console.log('In RGL - Current', this.currentGroup()?.name);
     console.log('In RGL - Moving group: ', draggedGroup);
     console.log('In RGL - Target group: ', targetGroup);
 
