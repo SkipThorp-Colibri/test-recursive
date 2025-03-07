@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, model, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, model, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { GroupModel } from '../models/group-model';
 import { RecursiveGroupListComponent } from './recursive-group-list/recursive-group-list.component';
 import { GroupDetailsComponent } from './group-details/group-details.component';
 import { AddGroupComponent } from './add-group/add-group.component';
+import { GroupService } from '../services/group.service';
 
 @Component({
   selector: 'clx-group-list',
@@ -17,6 +18,7 @@ import { AddGroupComponent } from './add-group/add-group.component';
   ],
 })
 export class GroupListComponent {
+  private groupService = inject(GroupService);
 
   @Input() groups: GroupModel[] = [];
   @Input() fullGroupsList: GroupModel[] = [];

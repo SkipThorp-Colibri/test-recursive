@@ -2,7 +2,6 @@ import { Component, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { GroupListComponent } from '../../libs/ui/recursive-group-list/src/components/group-list.component';
-import { GroupService } from '../services/group.service';
 import { GroupModel } from '../models';
 
 @Component({
@@ -18,7 +17,7 @@ export class AppComponent {
   public loading = signal<boolean>(false);
   public title = 'test-recursive';
 
-  constructor(private groupService: GroupService) {
+  constructor() {
     this.fetchGroups();
   }
 
