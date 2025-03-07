@@ -1,5 +1,6 @@
-import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, inject, Input, Output } from '@angular/core';
 import { GroupModel } from '../../models/group-model';
+import { GroupService } from '../../services/group.service';
 
 @Component({
   selector: 'clx-context-menu',
@@ -17,6 +18,8 @@ export class ContextMenuComponent {
   @Output() moveGroupEvent = new EventEmitter<{ movingGroup: GroupModel }>();
   @Output() delete = new EventEmitter<{ group: GroupModel }>();
   @Output() close = new EventEmitter<void>();
+
+  groupService = inject(GroupService);
 
   onAddGroup = () => {
     console.log(`onAddGroup \n\r ID: ${this.group.id}\n\rNAME: ${this.group.name}`);

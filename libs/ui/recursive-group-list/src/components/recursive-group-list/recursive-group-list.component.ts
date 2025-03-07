@@ -1,8 +1,9 @@
 import { DndDropEvent, DndModule } from 'ngx-drag-drop';
-import { Component, Input, Output, EventEmitter, input, model } from '@angular/core';
+import { Component, Input, Output, EventEmitter, input, model, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { GroupModel } from '../../models/group-model';
+import { GroupService } from '../../services/group.service';
 
 
 @Component({
@@ -16,10 +17,12 @@ export class RecursiveGroupListComponent {
   @Output() selectedGroupChange = new EventEmitter<GroupModel>();
   @Output() moveGroup = new EventEmitter<{ movingGroup: GroupModel, targetGroup: GroupModel }>();
 
+  groupService = inject(GroupService);
+
   onDrop(event: any, targetGroup: GroupModel) {
     const draggedGroup = event.data.movingGroup;
-    console.log('In RGL - Moving group: ', draggedGroup);
-    console.log('In RGL - Target group: ', targetGroup);
+    // console.log('In RGL - Moving group: ', draggedGroup);
+    // console.log('In RGL - Target group: ', targetGroup);
 
 
     // Prevent dropping a group into itself
@@ -29,20 +32,7 @@ export class RecursiveGroupListComponent {
 
     this.moveGroup.emit({ movingGroup: draggedGroup, targetGroup: targetGroup });
 
-    // // Find the parent list of the dragged group and remove it
-    // this.removeGroup(draggedGroup);
-
-
   }
-
-  sortGroupsRecursively = (groups: GroupModel[]): GroupModel[] => {
-    return groups.sort((a, b) => a.name.localeCompare(b.name)).map(group => ({
-      ...group,
-      subGroups: group.subGroups ? this.sortGroupsRecursively(group.subGroups) : []
-    }));
-  };
-
-
 
   onGroupClick(group: GroupModel) {
     this.selectedGroupChange.emit(group);
@@ -69,9 +59,9 @@ export class RecursiveGroupListComponent {
 
   renameGroup = (newName: string, group: GroupModel) => {
     console.log(`Renaming group: ${group.id} - ${group.name} to: ${newName.trim()}`);
-    this.renameGroupById(group.id, newName.trim());
+    this.groupService.renameGroupById(group.id, newName.trim(), this.groups());
     console.log(`Group renamed to: ${newName.trim()}`);
-    this.sortGroupsRecursively(this.groups());
+    this.groupService.sortGroupsListRecursively(this.groups());
   }
 
   deleteGroup = (groupToDelete: GroupModel) => {
@@ -101,30 +91,30 @@ export class RecursiveGroupListComponent {
     }
   }
 
-  renameGroupById = (groupId: string, newName: string): void => {
-    console.log(`Renaming group with ID: ${groupId} to '${newName}'`);
+  // renameGroupById = (groupId: string, newName: string): void => {
+  //   console.log(`Renaming group with ID: ${groupId} to '${newName}'`);
 
-    let groupFound = false;
+  //   let groupFound = false;
 
-    const updateGroupName = (groups: GroupModel[]) => {
-      groups.forEach(group => {
-        if (group.id === groupId) {
-          group.name = newName;
-          groupFound = true;
-        } else if (group.subGroups && group.subGroups.length > 0) {
-          updateGroupName(group.subGroups);
-        }
-      });
-    };
+  //   const updateGroupName = (groups: GroupModel[]) => {
+  //     groups.forEach(group => {
+  //       if (group.id === groupId) {
+  //         group.name = newName;
+  //         groupFound = true;
+  //       } else if (group.subGroups && group.subGroups.length > 0) {
+  //         updateGroupName(group.subGroups);
+  //       }
+  //     });
+  //   };
 
-    updateGroupName(this.groups());
+  //   updateGroupName(this.groups());
 
-    if (!groupFound) {
-      console.warn(`Group with ID ${groupId} not found.`);
-    } else {
-      console.log(`Group renamed successfully.`);
-    }
-  }
+  //   if (!groupFound) {
+  //     console.warn(`Group with ID ${groupId} not found.`);
+  //   } else {
+  //     console.log(`Group renamed successfully.`);
+  //   }
+  // }
 
   isGroup = (group: GroupModel): boolean => {
     return !!group.subGroups && (group.subGroups?.length ?? 0) > 0;
