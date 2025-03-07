@@ -91,31 +91,6 @@ export class RecursiveGroupListComponent {
     }
   }
 
-  // renameGroupById = (groupId: string, newName: string): void => {
-  //   console.log(`Renaming group with ID: ${groupId} to '${newName}'`);
-
-  //   let groupFound = false;
-
-  //   const updateGroupName = (groups: GroupModel[]) => {
-  //     groups.forEach(group => {
-  //       if (group.id === groupId) {
-  //         group.name = newName;
-  //         groupFound = true;
-  //       } else if (group.subGroups && group.subGroups.length > 0) {
-  //         updateGroupName(group.subGroups);
-  //       }
-  //     });
-  //   };
-
-  //   updateGroupName(this.groups());
-
-  //   if (!groupFound) {
-  //     console.warn(`Group with ID ${groupId} not found.`);
-  //   } else {
-  //     console.log(`Group renamed successfully.`);
-  //   }
-  // }
-
   isGroup = (group: GroupModel): boolean => {
     return !!group.subGroups && (group.subGroups?.length ?? 0) > 0;
   }
