@@ -25,6 +25,13 @@ export class GroupListComponent {
 
   selectedGroup: GroupModel | undefined;
 
+  sortGroupsRecursively = (groups: GroupModel[]): GroupModel[] => {
+    return groups.sort((a, b) => a.name.localeCompare(b.name)).map(group => ({
+      ...group,
+      subGroups: group.subGroups ? this.sortGroupsRecursively(group.subGroups) : []
+    }));
+  };
+
   onSelectedGroupChange = (group: GroupModel) => {
     this.selectedGroup = group;
     this.selectedGroupChange.emit(group);
@@ -52,6 +59,7 @@ export class GroupListComponent {
     targetGroup.subGroups.push(foundMovingGroup);
     console.log('After move into targetGroup', targetGroup);
 
+    this.sortGroupsRecursively(this.groups);
     console.log('Updated groups list:', this.groups);
   }
 
