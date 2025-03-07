@@ -2,7 +2,7 @@ import { Component, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { GroupListComponent } from '../../libs/ui/recursive-group-list/src/components/group-list.component';
-import { GroupModel } from '../models';
+import { GroupModel } from '../../libs/ui/recursive-group-list/src/models/group-model';
 
 @Component({
   selector: 'clx-recursive-group-root',
