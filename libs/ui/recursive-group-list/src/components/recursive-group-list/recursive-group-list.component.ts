@@ -11,109 +11,104 @@ import { GroupModel } from '../../models/group-model';
   templateUrl: './recursive-group-list.component.html',
 })
 export class RecursiveGroupListComponent {
-  public currentGroup = input<GroupModel>();
   public groups = model<GroupModel[]>([])
-  public fullGroupsList = input<GroupModel[]>([]) 
+  public fullGroupsList = input<GroupModel[]>([])
   @Output() selectedGroupChange = new EventEmitter<GroupModel>();
-  @Output() moveGroup = new EventEmitter<{ movingGroup: GroupModel, fullList: GroupModel[] }>();
-  @Output() groupsForMove = new EventEmitter<{ groups: GroupModel[] }>();
+  @Output() moveGroup = new EventEmitter<{ movingGroup: GroupModel, targetGroup: GroupModel }>();
 
   movingGroup!: GroupModel;
   showMoveModal: boolean = false;
   groupsList!: GroupModel[];
   targetGroup!: GroupModel;
 
-  removeGroup = (groupToRemove: GroupModel) => {
-    console.log(`groupToRemove: ${groupToRemove.id} - ${groupToRemove.name}`);
+  // removeGroup = (groupToRemove: GroupModel) => {
+  //   console.log(`groupToRemove: ${groupToRemove.id} - ${groupToRemove.name}`);
 
-    // Find the topmost parent of the group
-    const findTopMostParent = (groupList: GroupModel[], removeGroupId: string, parentId?: string): GroupModel | null => {
-      for (const group of groupList) {
-        if (group.id === removeGroupId) {
-          return parentId ? this.findGroupById(this.groups(), parentId) : null;
-        }
-        if (group.subGroups) {
-          const parent = findTopMostParent(group.subGroups, removeGroupId, group.id);
-          if (parent) return parent;
-        }
-      }
-      return null;
-    };
+  //   // Find the topmost parent of the group
+  //   const findTopMostParent = (groupList: GroupModel[], removeGroupId: string, parentId?: string): GroupModel | null => {
+  //     for (const group of groupList) {
+  //       if (group.id === removeGroupId) {
+  //         return parentId ? this.findGroupById(this.groups(), parentId) : null;
+  //       }
+  //       if (group.subGroups) {
+  //         const parent = findTopMostParent(group.subGroups, removeGroupId, group.id);
+  //         if (parent) return parent;
+  //       }
+  //     }
+  //     return null;
+  //   };
 
-    // Locate the top-most level to start the removal process
-    const topMostParent = findTopMostParent(this.groups(), groupToRemove.id, groupToRemove.parentId);
-    const targetGroupList = topMostParent ? topMostParent.subGroups : this.groups();
+  //   // Locate the top-most level to start the removal process
+  //   const topMostParent = findTopMostParent(this.groups(), groupToRemove.id, groupToRemove.parentId);
+  //   const targetGroupList = topMostParent ? topMostParent.subGroups : this.groups();
 
-    // Remove the group from the identified level
-    const removeRecursive = (groupList: GroupModel[]): boolean => {
-      const index = groupList.findIndex(g => g.id === groupToRemove.id);
-      if (index !== -1) {
-        groupList.splice(index, 1);
-        console.log(`Group ${groupToRemove.id} removed successfully`);
-        return true;
-      }
-      return groupList.some(group => group.subGroups && removeRecursive(group.subGroups));
-    };
+  //   // Remove the group from the identified level
+  //   const removeRecursive = (groupList: GroupModel[]): boolean => {
+  //     const index = groupList.findIndex(g => g.id === groupToRemove.id);
+  //     if (index !== -1) {
+  //       groupList.splice(index, 1);
+  //       console.log(`Group ${groupToRemove.id} removed successfully`);
+  //       return true;
+  //     }
+  //     return groupList.some(group => group.subGroups && removeRecursive(group.subGroups));
+  //   };
 
-    if (!removeRecursive(targetGroupList!)) {
-      console.warn(`Group ${groupToRemove.id} not found in groups list.`);
-    }
+  //   if (!removeRecursive(targetGroupList!)) {
+  //     console.warn(`Group ${groupToRemove.id} not found in groups list.`);
+  //   }
 
-    this.sortGroupsRecursively(this.groups());
-    console.log('Updated groups list:', this.groups());
-  };
+  //   this.sortGroupsRecursively(this.groups());
+  //   console.log('Updated groups list:', this.groups());
+  // };
 
 
   onDrop(event: any, targetGroup: GroupModel) {
     const draggedGroup = event.data.movingGroup;
-    console.log('In RGL - Current', this.currentGroup()?.name);
+    // console.log('In RGL - Current', this.currentGroup()?.name);
     console.log('In RGL - Moving group: ', draggedGroup);
     console.log('In RGL - Target group: ', targetGroup);
+
 
     // Prevent dropping a group into itself
     if (draggedGroup === targetGroup) {
       return;
     }
 
-    // Find the parent list of the dragged group and remove it
-    this.removeGroup(draggedGroup);
+    this.moveGroup.emit({ movingGroup: draggedGroup, targetGroup: targetGroup });
 
-    // Ensure the targetGroup has a subGroups array
-    if (!targetGroup.subGroups) {
-      targetGroup.subGroups = [];
-    }
+    // // Find the parent list of the dragged group and remove it
+    // this.removeGroup(draggedGroup);
 
-    // Move the dragged group into the dropped-on group
-    targetGroup.subGroups.push(draggedGroup);
+
   }
 
-  sortGroupsRecursively = (groups: GroupModel[]): GroupModel[] => {
-    return groups.sort((a, b) => a.name.localeCompare(b.name)).map(group => ({
-      ...group,
-      subGroups: group.subGroups ? this.sortGroupsRecursively(group.subGroups) : []
-    }));
-  };
+  // sortGroupsRecursively = (groups: GroupModel[]): GroupModel[] => {
+  //   return groups.sort((a, b) => a.name.localeCompare(b.name)).map(group => ({
+  //     ...group,
+  //     subGroups: group.subGroups ? this.sortGroupsRecursively(group.subGroups) : []
+  //   }));
+  // };
 
-  private findGroupById(groups: GroupModel[], id: string): GroupModel | null {
-    for (const group of groups) {
-      if (group.id === id) {
-        return group;
-      }
-      if (group.subGroups) {
-        const found = this.findGroupById(group.subGroups, id);
-        if (found) {
-          return found;
-        }
-      }
-    }
-    return null;
-  }
+  // private findGroupById(groups: GroupModel[], id: string): GroupModel | null {
+  //   for (const group of groups) {
+  //     if (group.id === id) {
+  //       return group;
+  //     }
+  //     if (group.subGroups) {
+  //       const found = this.findGroupById(group.subGroups, id);
+  //       if (found) {
+  //         return found;
+  //       }
+  //     }
+  //   }
+  //   return null;
+  // }
 
-  onUpdateGroups = (updatedGroups: GroupModel[]) => {
-    console.log('Updating groups after move operation', updatedGroups);
-    this.groups.set(updatedGroups);
-    this.showMoveModal = false;
-  };
+  // onUpdateGroups = (updatedGroups: GroupModel[]) => {
+  //   console.log('Updating groups after move operation', updatedGroups);
+  //   this.groups.set(updatedGroups);
+  //   this.showMoveModal = false;
+  // };
 
   onGroupClick(group: GroupModel) {
     this.selectedGroupChange.emit(group);

@@ -32,14 +32,14 @@
   <div class="group-subgroups ml-5 p-1.25">
     <clx-recursive-group-list
       [groups]="group.subGroups"
-      [currentGroup]="group"
       (selectedGroupChange)="selectedGroupChange.emit($event)"
+      (moveGroup)="moveGroup.emit($event)"
     >
     </clx-recursive-group-list>
   </div>
   }
 </div>
-} 
+}
 
 <clx-context-menu
   [visible]="contextMenuVisible"

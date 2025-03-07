@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, model, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { GroupModel } from '../models/group-model';
@@ -21,6 +21,7 @@ export class GroupListComponent {
   @Input() groups: GroupModel[] = [];
   @Input() fullGroupsList: GroupModel[] = [];
   @Output() selectedGroupChange = new EventEmitter<GroupModel>();
+  @Output() fullGroupsListChange = new EventEmitter<GroupModel[]>();
 
   selectedGroup: GroupModel | undefined;
 
@@ -34,6 +35,42 @@ export class GroupListComponent {
     this.handleGroupAdded(newGroup);
   }
 
+  onMoveGroup(movingGroup: GroupModel, targetGroup: GroupModel) {
+    console.log('In groupList component', movingGroup, targetGroup);
+
+    if (!targetGroup.subGroups) {
+      targetGroup.subGroups = [];
+    }
+
+    let foundMovingGroup = this.findAndRemoveGroup(this.groups, movingGroup.id);
+
+    if (!foundMovingGroup) {
+      console.warn("Group to move not found in tree!");
+      return;
+    }
+
+    targetGroup.subGroups.push(foundMovingGroup);
+    console.log('After move into targetGroup', targetGroup);
+
+    console.log('Updated groups list:', this.groups);
+  }
+
+  private findAndRemoveGroup(groups: GroupModel[], groupIdToRemove: string): GroupModel | null {
+    for (let i = 0; i < groups.length; i++) {
+      if (groups[i].id === groupIdToRemove) {
+        return groups.splice(i, 1)[0];
+      }
+
+      if (groups[i].subGroups) {
+        let foundGroup = this.findAndRemoveGroup(groups[i].subGroups ?? [], groupIdToRemove);
+        if (foundGroup) return foundGroup;
+      }
+    }
+    return null;
+  }
+
+
+
   private handleGroupAdded(newGroup: GroupModel) {
     if (newGroup.parentId) {
       const parentGroup = this.findGroupById(this.groups, newGroup.parentId);
@@ -44,6 +81,8 @@ export class GroupListComponent {
       }
     }
     this.groups.push(newGroup);
+    this.fullGroupsList = [...this.groups];
+    console.log('Adding group to root level', this.fullGroupsList);
   }
 
   private findGroupById(groups: GroupModel[], id: string): GroupModel | null {
