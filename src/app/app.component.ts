@@ -138,11 +138,11 @@ export class AppComponent {
         "expanded": false,
         "subGroups": []
       }];
+      this.sortGroupsRecursively(this.fullGroupsList);
       console.log('In the Mock Full Groups:', this.fullGroupsList);
       // console.log('In the Mock Full Groups:', JSON.stringify(this.fullGroupsList));
       this.loading.set(false);
     }, 1000);
-
   }
 
 

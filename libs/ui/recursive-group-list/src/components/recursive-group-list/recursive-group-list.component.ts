@@ -21,47 +21,6 @@ export class RecursiveGroupListComponent {
   groupsList!: GroupModel[];
   targetGroup!: GroupModel;
 
-  // removeGroup = (groupToRemove: GroupModel) => {
-  //   console.log(`groupToRemove: ${groupToRemove.id} - ${groupToRemove.name}`);
-
-  //   // Find the topmost parent of the group
-  //   const findTopMostParent = (groupList: GroupModel[], removeGroupId: string, parentId?: string): GroupModel | null => {
-  //     for (const group of groupList) {
-  //       if (group.id === removeGroupId) {
-  //         return parentId ? this.findGroupById(this.groups(), parentId) : null;
-  //       }
-  //       if (group.subGroups) {
-  //         const parent = findTopMostParent(group.subGroups, removeGroupId, group.id);
-  //         if (parent) return parent;
-  //       }
-  //     }
-  //     return null;
-  //   };
-
-  //   // Locate the top-most level to start the removal process
-  //   const topMostParent = findTopMostParent(this.groups(), groupToRemove.id, groupToRemove.parentId);
-  //   const targetGroupList = topMostParent ? topMostParent.subGroups : this.groups();
-
-  //   // Remove the group from the identified level
-  //   const removeRecursive = (groupList: GroupModel[]): boolean => {
-  //     const index = groupList.findIndex(g => g.id === groupToRemove.id);
-  //     if (index !== -1) {
-  //       groupList.splice(index, 1);
-  //       console.log(`Group ${groupToRemove.id} removed successfully`);
-  //       return true;
-  //     }
-  //     return groupList.some(group => group.subGroups && removeRecursive(group.subGroups));
-  //   };
-
-  //   if (!removeRecursive(targetGroupList!)) {
-  //     console.warn(`Group ${groupToRemove.id} not found in groups list.`);
-  //   }
-
-  //   this.sortGroupsRecursively(this.groups());
-  //   console.log('Updated groups list:', this.groups());
-  // };
-
-
   onDrop(event: any, targetGroup: GroupModel) {
     const draggedGroup = event.data.movingGroup;
     // console.log('In RGL - Current', this.currentGroup()?.name);
@@ -82,33 +41,14 @@ export class RecursiveGroupListComponent {
 
   }
 
-  // sortGroupsRecursively = (groups: GroupModel[]): GroupModel[] => {
-  //   return groups.sort((a, b) => a.name.localeCompare(b.name)).map(group => ({
-  //     ...group,
-  //     subGroups: group.subGroups ? this.sortGroupsRecursively(group.subGroups) : []
-  //   }));
-  // };
+  sortGroupsRecursively = (groups: GroupModel[]): GroupModel[] => {
+    return groups.sort((a, b) => a.name.localeCompare(b.name)).map(group => ({
+      ...group,
+      subGroups: group.subGroups ? this.sortGroupsRecursively(group.subGroups) : []
+    }));
+  };
 
-  // private findGroupById(groups: GroupModel[], id: string): GroupModel | null {
-  //   for (const group of groups) {
-  //     if (group.id === id) {
-  //       return group;
-  //     }
-  //     if (group.subGroups) {
-  //       const found = this.findGroupById(group.subGroups, id);
-  //       if (found) {
-  //         return found;
-  //       }
-  //     }
-  //   }
-  //   return null;
-  // }
 
-  // onUpdateGroups = (updatedGroups: GroupModel[]) => {
-  //   console.log('Updating groups after move operation', updatedGroups);
-  //   this.groups.set(updatedGroups);
-  //   this.showMoveModal = false;
-  // };
 
   onGroupClick(group: GroupModel) {
     this.selectedGroupChange.emit(group);
@@ -137,6 +77,7 @@ export class RecursiveGroupListComponent {
     console.log(`Renaming group: ${group.id} - ${group.name} to: ${newName.trim()}`);
     this.renameGroupById(group.id, newName.trim());
     console.log(`Group renamed to: ${newName.trim()}`);
+    this.sortGroupsRecursively(this.groups());
   }
 
   deleteGroup = (groupToDelete: GroupModel) => {

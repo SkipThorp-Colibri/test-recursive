@@ -40,8 +40,17 @@ export class AddGroupComponent {
     this.newGroup.id = crypto.randomUUID();
     this.groupAdded.emit({ group: this.newGroup });
 
+    this.sortGroupsRecursively(this.groups);
+
     // Reset form and close modal
     this.newGroup = { id: '', name: '', description: '', expanded: false, parentId: undefined, subGroups: [] };
     this.isModalOpen = false;
   }
+
+  private sortGroupsRecursively = (groups: GroupModel[]): GroupModel[] => {
+    return groups.sort((a, b) => a.name.localeCompare(b.name)).map(group => ({
+      ...group,
+      subGroups: group.subGroups ? this.sortGroupsRecursively(group.subGroups) : []
+    }));
+  };
 }
