@@ -144,7 +144,6 @@ export class AppComponent {
     }, 1000);
   }
 
-
   private createGroup = (
     id: string = crypto.randomUUID.toString(),
     name: string,
