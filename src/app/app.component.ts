@@ -132,12 +132,10 @@ export class AppComponent {
       this.sortGroupsRecursively(this.groups);
       console.log('In the Mock Groups:', this.groups);
       this.fullGroupsList = [...this.groups];
-      console.log('In the Mock Full Groups:', JSON.stringify(this.fullGroupsList));
+      console.log('In the Mock Full Groups:', this.fullGroupsList);
       this.loading.set(false);
     }, 1000);
-
   }
-
 
   private createGroup = (
     id: string = crypto.randomUUID.toString(),
