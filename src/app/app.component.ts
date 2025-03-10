@@ -130,13 +130,14 @@ export class AppComponent {
       ];
       this.sortGroupsRecursively(this.groups);
       console.log('In the Mock Groups:', this.groups);
-      this.fullGroupsList = [...this.groups, {
-        "id": "197cd8db-ec3b-47b0-a479-cfe9c6a79dd6",
-        "name": "Full Groups List",
-        "description": "new group for full list",
-        "expanded": false,
-        "subGroups": []
-      }];
+      this.fullGroupsList = [...this.groups];
+      // this.fullGroupsList = [...this.groups, {
+      //   "id": "197cd8db-ec3b-47b0-a479-cfe9c6a79dd6",
+      //   "name": "Full Groups List",
+      //   "description": "new group for full list",
+      //   "expanded": false,
+      //   "subGroups": []
+      // }];
       this.sortGroupsRecursively(this.fullGroupsList);
       console.log('In the Mock Full Groups:', this.fullGroupsList);
       // console.log('In the Mock Full Groups:', JSON.stringify(this.fullGroupsList));
