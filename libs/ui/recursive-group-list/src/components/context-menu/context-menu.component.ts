@@ -13,7 +13,7 @@ export class ContextMenuComponent {
   @Input() visible = false;
   @Input() position = { x: 0, y: 0 };
 
-  @Output() rename = new EventEmitter<{ newName: string; group: GroupModel }>();
+  @Output() rename = new EventEmitter<{ groupId: string, newName: string; group: GroupModel }>();
   @Output() addGroup = new EventEmitter<{ group: GroupModel }>();
   @Output() moveGroupEvent = new EventEmitter<{ movingGroup: GroupModel }>();
   @Output() delete = new EventEmitter<{ group: GroupModel }>();
@@ -39,9 +39,10 @@ export class ContextMenuComponent {
 
     console.log(`onRename group with ID: ${this.group.id}`);
 
+    const groupId = this.group.id;
     const newName = prompt(`Rename group '${this.group.name}':`, this.group.name);
     if (newName && newName.trim() !== this.group.name) {
-      this.rename.emit({ newName: newName.trim(), group: this.group });
+      this.rename.emit({ groupId: groupId, newName: newName.trim(), group: this.group });
     }
   };
 

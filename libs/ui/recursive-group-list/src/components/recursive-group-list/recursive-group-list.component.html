@@ -45,7 +45,7 @@
   [visible]="contextMenuVisible"
   [position]="contextMenuPosition"
   [group]="selectedGroup!"
-  (rename)="renameGroup($event.newName, $event.group)"
+  (rename)="renameGroupById($event.groupId, $event.newName, groups)"
   (delete)="deleteGroup($event.group)"
   (close)="contextMenuVisible = false"
 >
