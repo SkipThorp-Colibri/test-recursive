@@ -61,12 +61,21 @@ export class RecursiveGroupListComponent {
 
   renameGroup = (newName: string, group: GroupModel) => {
     console.log(`Renaming group: ${group.id} - ${group.name} to: ${newName.trim()}`);
-    this.groupService.renameGroupById(group.id, newName.trim(), this.groups);
-    console.log(`Group renamed to: ${newName.trim()}`);
-    const newFullGroupsList = this.groupService.sortGroupsListRecursively(this.fullGroupsList);
 
-    this.updateGroupsList.emit({ updatedGroupList: newFullGroupsList });
-  }
+    const newGroupsList = this.groupService.renameGroupById(group.id, newName.trim(), this.groups); // ✅ Call updated function
+
+    console.log('After rename:', this.groups);
+    this.updateGroupsList.emit({ updatedGroupList: newGroupsList });
+  };
+
+  // renameGroup = (newName: string, group: GroupModel) => {
+  //   console.log(`Renaming group: ${group.id} - ${group.name} to: ${newName.trim()}`);
+  //   this.groupService.renameGroupById(group.id, newName.trim(), this.groups);
+  //   console.log(`Group renamed to: ${newName.trim()}`);
+  //   const newFullGroupsList = this.groupService.sortGroupsListRecursively(this.fullGroupsList);
+
+  //   this.updateGroupsList.emit({ updatedGroupList: newFullGroupsList });
+  // }
 
   deleteGroup = (groupToDelete: GroupModel): void => {
     console.log('Full groups list:', this.fullGroupsList);
