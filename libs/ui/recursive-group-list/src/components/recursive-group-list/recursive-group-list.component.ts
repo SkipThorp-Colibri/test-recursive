@@ -12,10 +12,12 @@ import { GroupService } from '../../services/group.service';
   templateUrl: './recursive-group-list.component.html',
 })
 export class RecursiveGroupListComponent {
-  public groups = model<GroupModel[]>([])
-  public fullGroupsList = input<GroupModel[]>([])
+  @Input() groups: GroupModel[] = [];
+  @Input() fullGroupsList: GroupModel[] = [];
   @Output() selectedGroupChange = new EventEmitter<GroupModel>();
   @Output() moveGroup = new EventEmitter<{ movingGroup: GroupModel, targetGroup: GroupModel }>();
+  @Output() updateGroupsList = new EventEmitter<{ updatedGroupList: GroupModel[] }>();
+
 
   groupService = inject(GroupService);
 
@@ -59,26 +61,52 @@ export class RecursiveGroupListComponent {
 
   renameGroup = (newName: string, group: GroupModel) => {
     console.log(`Renaming group: ${group.id} - ${group.name} to: ${newName.trim()}`);
-    this.groupService.renameGroupById(group.id, newName.trim(), this.groups());
+    this.groupService.renameGroupById(group.id, newName.trim(), this.groups);
     console.log(`Group renamed to: ${newName.trim()}`);
-    this.groupService.sortGroupsListRecursively(this.groups());
+    const newFullGroupsList = this.groupService.sortGroupsListRecursively(this.fullGroupsList);
+
+    this.updateGroupsList.emit({ updatedGroupList: newFullGroupsList });
   }
 
-  deleteGroup = (groupToDelete: GroupModel) => {
+  deleteGroup = (groupToDelete: GroupModel): void => {
+    console.log('Full groups list:', this.fullGroupsList);
     console.log(`Deleting group: ${groupToDelete.id} - ${groupToDelete.name}`);
 
     const removeGroupById = (groups: GroupModel[]): GroupModel[] => {
-      const groupFound = groups.find(group => group.id === groupToDelete.id);
-      if (groupFound) {
-        groups.splice(groups.indexOf(groupFound), 1);
-      }
-      return groups;
+      return groups
+        .filter(group => group.id !== groupToDelete.id) // ✅ Removes the group if found at this level
+        .map(group => ({
+          ...group,
+          subGroups: group.subGroups ? removeGroupById(group.subGroups) : [] // ✅ Recursively check subGroups
+        }));
     };
 
-    this.groups.set(removeGroupById(this.groups()));
+    const newFullGroupsList: GroupModel[] = [...removeGroupById(this.fullGroupsList)];
 
     console.log(`Group deleted successfully: ${groupToDelete.id}`);
-  }
+
+    console.log('Full groups list before delete:', this.fullGroupsList);
+
+    console.log('New full groups list:', newFullGroupsList);
+
+    this.updateGroupsList.emit({ updatedGroupList: newFullGroupsList });
+  };
+
+  // deleteGroup = (groupToDelete: GroupModel) => {
+  //   console.log(`Deleting group: ${groupToDelete.id} - ${groupToDelete.name}`);
+
+  //   const removeGroupById = (groups: GroupModel[]): GroupModel[] => {
+  //     const groupFound = groups.find(group => group.id === groupToDelete.id);
+  //     if (groupFound) {
+  //       groups.splice(groups.indexOf(groupFound), 1);
+  //     }
+  //     return groups;
+  //   };
+
+  //   this.groups.set(removeGroupById(this.groups()));
+
+  //   console.log(`Group deleted successfully: ${groupToDelete.id}`);
+  // }
 
   toggleGroup = (group: GroupModel): void => {
     console.log(`Group toggled in model: ${group.id}`);

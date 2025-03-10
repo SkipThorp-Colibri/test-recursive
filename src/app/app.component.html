@@ -6,4 +6,5 @@
 <clx-group-list
   [groups]="fullGroupsList"
   [fullGroupsList]="fullGroupsList"
+  (updateGroupsList)="outputUpdatedGroupsList($event.updatedGroupList)"
 ></clx-group-list>

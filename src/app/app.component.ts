@@ -1,4 +1,4 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { GroupListComponent } from '../../libs/ui/recursive-group-list/src/components/group-list.component';
@@ -11,6 +11,7 @@ import { GroupModel } from '../../libs/ui/recursive-group-list/src/models/group-
 })
 export class AppComponent {
   @Input() selectedGroupChange = signal<GroupModel | null>(null);
+  @Output() updateGroupsList = new EventEmitter<{ updatedGroupList: GroupModel[] }>();
 
   public groups: GroupModel[] = [];
   public fullGroupsList: GroupModel[] = [];
@@ -143,6 +144,11 @@ export class AppComponent {
       // console.log('In the Mock Full Groups:', JSON.stringify(this.fullGroupsList));
       this.loading.set(false);
     }, 1000);
+  }
+
+  outputUpdatedGroupsList = (updatedGroupList: GroupModel[]): void => {
+    console.log('Updated groups list:', updatedGroupList);
+    this.fullGroupsList = [...updatedGroupList];
   }
 
   private createGroup = (
