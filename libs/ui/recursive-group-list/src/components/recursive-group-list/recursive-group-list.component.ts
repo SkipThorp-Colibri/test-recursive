@@ -59,14 +59,67 @@ export class RecursiveGroupListComponent {
     console.log(`Updated selectedGroup for menu: ${this.selectedGroup.id} - ${this.selectedGroup.name}`);
   }
 
-  renameGroup = (newName: string, group: GroupModel) => {
-    console.log(`Renaming group: ${group.id} - ${group.name} to: ${newName.trim()}`);
+  renameGroupById = (groupId: string, newName: string, groups: GroupModel[]): GroupModel[] => {
+    console.log(`Renaming group with ID: ${groupId} to '${newName}'`);
 
-    const newGroupsList = this.groupService.renameGroupById(group.id, newName.trim(), this.groups); // ✅ Call updated function
+    // Step 1: Rename the group in the provided `groups` list
+    const updatedGroups = this.updateGroupNameRecursively(groups, groupId, newName);
 
-    console.log('After rename:', this.groups);
-    this.updateGroupsList.emit({ updatedGroupList: newGroupsList });
+    // Step 2: Find the parent in `fullGroupsList` and apply the change to the correct location
+    const updatedFullGroupsList = this.updateGroupRecursively(this.fullGroupsList, groupId, updatedGroups);
+    this.groups = [...updatedGroups];
+    console.log(`Group renamed successfully.`);
+    console.log('Updated groups:', updatedGroups);
+    console.log('Updated fullGroupsList:', updatedFullGroupsList);
+
+    return updatedFullGroupsList; // Return the updated full list
   };
+
+  /**
+   * Recursively renames a group within the given list.
+   */
+  private updateGroupNameRecursively(groups: GroupModel[], groupId: string, newName: string): GroupModel[] {
+    return groups.map(group => ({
+      ...group,
+      name: group.id === groupId ? newName : group.name,
+      subGroups: group.subGroups ? this.updateGroupNameRecursively(group.subGroups, groupId, newName) : []
+    }));
+  }
+
+  /**
+   * Recursively finds the group in `fullGroupsList` and updates its subGroups
+   * if it has been renamed in `groups`.
+   */
+  private updateGroupRecursively(groups: GroupModel[], groupId: string, updatedGroups: GroupModel[]): GroupModel[] {
+    return groups.map(group => {
+      if (group.subGroups?.some(sub => sub.id === groupId)) {
+        // If this group is the parent of the renamed group, update its subGroups
+        return {
+          ...group,
+          subGroups: updatedGroups
+        };
+      }
+      return {
+        ...group,
+        subGroups: group.subGroups ? this.updateGroupRecursively(group.subGroups, groupId, updatedGroups) : []
+      };
+    });
+  }
+
+
+
+  // renameGroup = (newName: string, group: GroupModel) => {
+  //   console.log(`Renaming group: ${group.id} - ${group.name} to: ${newName.trim()}`);
+
+  //   this.groups = this.groupService.renameGroupById(group.id, newName.trim(), this.groups); // ✅ Call updated function
+  //   console.log('After rename:', this.groups);
+  //   console.log('Full groups list:', this.fullGroupsList);
+
+  //   const newGroupsList = [...this.fullGroupsList];
+
+  //   console.log('After rename:', this.groups);
+  //   this.updateGroupsList.emit({ updatedGroupList: this.fullGroupsList });
+  // };
 
   // renameGroup = (newName: string, group: GroupModel) => {
   //   console.log(`Renaming group: ${group.id} - ${group.name} to: ${newName.trim()}`);
