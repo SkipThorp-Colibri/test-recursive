@@ -24,6 +24,7 @@ export class GroupListComponent {
   @Input() fullGroupsList: GroupModel[] = [];
   @Output() selectedGroupChange = new EventEmitter<GroupModel>();
   @Output() fullGroupsListChange = new EventEmitter<GroupModel[]>();
+  @Output() updateGroupsList = new EventEmitter<{ updatedGroupList: GroupModel[] }>();
 
   selectedGroup: GroupModel | undefined;
 

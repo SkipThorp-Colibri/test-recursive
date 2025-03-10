@@ -20,15 +20,12 @@ export class GroupService {
 
     let groupFound = false;
 
-    const updateGroupName = (groups: GroupModel[]) => {
-      groups.forEach(group => {
-        if (group.id === groupId) {
-          group.name = newName;
-          groupFound = true;
-        } else if (group.subGroups && group.subGroups.length > 0) {
-          updateGroupName(group.subGroups);
-        }
-      });
+    const updateGroupName = (groups: GroupModel[]): GroupModel[] => {
+      return groups.map(group => ({
+        ...group,
+        name: group.id === groupId ? newName : group.name, // ✅ Update name if it matches
+        subGroups: group.subGroups ? updateGroupName(group.subGroups) : [] // ✅ Recursively update subGroups
+      }));
     };
 
     updateGroupName(groups);
