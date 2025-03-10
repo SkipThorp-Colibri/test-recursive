@@ -12,6 +12,7 @@ import { GroupService } from '../../services/group.service';
 export class AddGroupComponent {
   @Input() groups: GroupModel[] = [];
   @Output() groupAdded = new EventEmitter<{ group: GroupModel }>();
+  @Output() updateGroupsList = new EventEmitter<{ updatedGroupList: GroupModel[] }>();
 
   groupService = inject(GroupService);
 
@@ -44,7 +45,9 @@ export class AddGroupComponent {
     this.groupAdded.emit({ group: this.newGroup });
 
     const sortedGroups = this.groupService.sortGroupsListRecursively(this.groups);
-    console.log('Sorted groups: ', sortedGroups);
+    // console.log('Sorted groups: ', sortedGroups);
+    this.updateGroupsList.emit({ updatedGroupList: sortedGroups });
+
 
     // Reset form and close modal
     this.newGroup = { id: '', name: '', description: '', expanded: false, parentId: undefined, subGroups: [] };

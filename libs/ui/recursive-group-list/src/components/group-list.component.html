@@ -14,5 +14,6 @@
 <clx-add-group
   [groups]="groups"
   (groupAdded)="onGroupAdded($event.group)"
+  (updateGroupsList)="updateGroupsList.emit($event)"
   class="m-1 z-0"
 ></clx-add-group>
