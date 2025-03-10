@@ -28,25 +28,22 @@ export class GroupListComponent {
 
   selectedGroup: GroupModel | undefined;
 
-  sortGroupsRecursively = (groups: GroupModel[]): GroupModel[] => {
-    return groups.sort((a, b) => a.name.localeCompare(b.name)).map(group => ({
-      ...group,
-      subGroups: group.subGroups ? this.sortGroupsRecursively(group.subGroups) : []
-    }));
-  };
-
   onSelectedGroupChange = (group: GroupModel) => {
     this.selectedGroup = group;
     this.selectedGroupChange.emit(group);
   }
 
   onGroupAdded(newGroup: GroupModel) {
-    console.log(`onGroupAdded \n\r ID: ${newGroup.id}\n\rNAME: ${newGroup.name}\n\rPARENT ID: ${newGroup.parentId}\n\rDESCRIPTION: ${newGroup.description}`);
+    // console.log(`onGroupAdded \n\r ID: ${newGroup.id}\n\rNAME: ${newGroup.name}\n\rPARENT ID: ${newGroup.parentId}\n\rDESCRIPTION: ${newGroup.description}`);
     this.handleGroupAdded(newGroup);
+    // console.log('Updated groups list:', this.groups);
+    const sortedGroups = this.groupService.sortGroupsListRecursively(this.groups);
+    this.fullGroupsList = [...sortedGroups];
+    this.updateGroupsList.emit({ updatedGroupList: this.fullGroupsList });
   }
 
   onMoveGroup(movingGroup: GroupModel, targetGroup: GroupModel) {
-    console.log('In groupList component', movingGroup, targetGroup);
+    // console.log('In groupList component', movingGroup, targetGroup);
 
     if (!targetGroup.subGroups) {
       targetGroup.subGroups = [];
@@ -55,15 +52,16 @@ export class GroupListComponent {
     let foundMovingGroup = this.findAndRemoveGroup(this.groups, movingGroup.id);
 
     if (!foundMovingGroup) {
-      console.warn("Group to move not found in tree!");
+      // console.warn("Group to move not found in tree!");
       return;
     }
 
     targetGroup.subGroups.push(foundMovingGroup);
-    console.log('After move into targetGroup', targetGroup);
+    // console.log('After move into targetGroup', targetGroup);
 
-    this.sortGroupsRecursively(this.groups);
-    console.log('Updated groups list:', this.groups);
+    const sortedGroups = this.groupService.sortGroupsListRecursively(this.groups);
+    // console.log('Sorted groups: ', sortedGroups);
+    this.updateGroupsList.emit({ updatedGroupList: sortedGroups });
   }
 
   private findAndRemoveGroup(groups: GroupModel[], groupIdToRemove: string): GroupModel | null {
@@ -80,8 +78,6 @@ export class GroupListComponent {
     return null;
   }
 
-
-
   private handleGroupAdded(newGroup: GroupModel) {
     if (newGroup.parentId) {
       const parentGroup = this.findGroupById(this.groups, newGroup.parentId);
@@ -93,7 +89,7 @@ export class GroupListComponent {
     }
     this.groups.push(newGroup);
     this.fullGroupsList = [...this.groups];
-    console.log('Adding group to root level', this.fullGroupsList);
+    this.updateGroupsList.emit({ updatedGroupList: this.fullGroupsList });
   }
 
   private findGroupById(groups: GroupModel[], id: string): GroupModel | null {
