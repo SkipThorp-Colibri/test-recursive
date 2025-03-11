@@ -1,9 +1,8 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { GroupListComponent } from '../../libs/ui/recursive-group-list/src/components/group-list.component';
-import { GroupService } from '../services/group.service';
-import { GroupModel } from '../models';
+import { GroupModel } from '../../libs/ui/recursive-group-list/src/models/group-model';
 
 @Component({
   selector: 'clx-recursive-group-root',
@@ -12,13 +11,14 @@ import { GroupModel } from '../models';
 })
 export class AppComponent {
   @Input() selectedGroupChange = signal<GroupModel | null>(null);
+  @Output() updateGroupsList = new EventEmitter<{ updatedGroupList: GroupModel[] }>();
 
   public groups = signal<GroupModel[]>([]);
   public fullGroupsList: GroupModel[] = [];
   public loading = signal<boolean>(false);
   public title = 'test-recursive';
 
-  constructor(private groupService: GroupService) {
+constructor(private groupService: GroupService) {
     this.getGroups();
   }
 
@@ -34,4 +34,5 @@ export class AppComponent {
     this.groups.set(this.groupService.groups())
 
   }
+
 }

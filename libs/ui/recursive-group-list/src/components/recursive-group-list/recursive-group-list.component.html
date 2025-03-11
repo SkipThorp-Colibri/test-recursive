@@ -1,4 +1,4 @@
-@if (groups) { @for (group of groups; track $index) {
+@for (group of groups; track $index) {
 <div
   class="m-1"
   [dndDraggable]="{
@@ -32,20 +32,22 @@
   <div class="group-subgroups ml-5 p-1.25">
     <clx-recursive-group-list
       [groups]="group.subGroups"
+      [fullGroupsList]="fullGroupsList"
       (selectedGroupChange)="selectedGroupChange.emit($event)"
+      (moveGroup)="moveGroup.emit($event)"
+      (updateGroupsList)="updateGroupsList.emit($event)"
     >
     </clx-recursive-group-list>
   </div>
   }
 </div>
-} }
-
 <clx-context-menu
   [visible]="contextMenuVisible"
   [position]="contextMenuPosition"
   [group]="selectedGroup!"
-  (rename)="renameGroup($event.newName, $event.group)"
+  (rename)="renameGroupById($event.groupId, $event.newName, groups)"
   (delete)="deleteGroup($event.group)"
   (close)="contextMenuVisible = false"
 >
 </clx-context-menu>
+}
