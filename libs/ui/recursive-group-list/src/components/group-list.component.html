@@ -4,7 +4,7 @@
   <clx-recursive-group-list
     [groups]="groups"
     [fullGroupsList]="fullGroupsList"
-    (moveGroup)="onMoveGroup($event.movingGroup, $event.targetGroup)"
+    (moveGroup)="onMoveGroup($event)"
     (selectedGroupChange)="onSelectedGroupChange($event)"
     (updateGroupsList)="updateGroupsList.emit($event)"
   ></clx-recursive-group-list>
