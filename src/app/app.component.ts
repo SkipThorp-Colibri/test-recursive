@@ -136,6 +136,7 @@ export class AppComponent {
     }, 1000);
   }
 
+
   outputUpdatedGroupsList = (updatedGroupList: GroupModel[]): void => {
     // console.log('Updated groups list:', updatedGroupList);
     this.fullGroupsList = [...updatedGroupList];
