@@ -1,10 +1,8 @@
 <clx-group-details [selectedGroup]="selectedGroup"></clx-group-details>
-@if (groups) {
+@if (groups()) {
 <div>
   <clx-recursive-group-list
-    [groups]="groups"
-    [fullGroupsList]="fullGroupsList"
-    (moveGroup)="onMoveGroup($event.movingGroup, $event.targetGroup)"
+    [groups]="groups()"
     (selectedGroupChange)="onSelectedGroupChange($event)"
     (updateGroupsList)="updateGroupsList.emit($event)"
   ></clx-recursive-group-list>
@@ -12,7 +10,7 @@
 }
 
 <clx-add-group
-  [groups]="groups"
+  [groups]="groups()"
   (groupAdded)="onGroupAdded($event.group)"
   (updateGroupsList)="updateGroupsList.emit($event)"
   class="m-1 z-0"
