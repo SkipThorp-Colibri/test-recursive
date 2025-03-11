@@ -42,21 +42,21 @@ export class GroupListComponent {
     this.updateGroupsList.emit({ updatedGroupList: this.fullGroupsList });
   }
 
-  onMoveGroup(movingGroup: GroupModel, targetGroup: GroupModel) {
+  onMoveGroup(event: { movingGroup: GroupModel; targetGroup: GroupModel }) {
     // console.log('In groupList component', movingGroup, targetGroup);
 
-    if (!targetGroup.subGroups) {
-      targetGroup.subGroups = [];
+    if (!event.targetGroup.subGroups) {
+      event.targetGroup.subGroups = [];
     }
 
-    let foundMovingGroup = this.findAndRemoveGroup(this.groups, movingGroup.id);
+    let foundMovingGroup = this.findAndRemoveGroup(this.groups, event.movingGroup.id);
 
     if (!foundMovingGroup) {
       // console.warn("Group to move not found in tree!");
       return;
     }
 
-    targetGroup.subGroups.push(foundMovingGroup);
+    event.targetGroup.subGroups.push(foundMovingGroup);
     // console.log('After move into targetGroup', targetGroup);
 
     const sortedGroups = this.groupService.sortGroupsListRecursively(this.groups);

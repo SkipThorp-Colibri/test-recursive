@@ -49,4 +49,28 @@ export class GroupService {
 
     // console.log(`Group deleted successfully: ${groupToDelete.id}`);
   }
+
+  public updateGroupNameRecursively(groups: GroupModel[], groupId: string, newName: string): GroupModel[] {
+    return groups.map(group => ({
+      ...group,
+      name: group.id === groupId ? newName : group.name,
+      subGroups: group.subGroups ? this.updateGroupNameRecursively(group.subGroups, groupId, newName) : []
+    }));
+  }
+
+  public updateGroupRecursively(groups: GroupModel[], groupId: string, updatedGroups: GroupModel[]): GroupModel[] {
+    return groups.map(group => {
+      if (group.subGroups?.some(sub => sub.id === groupId)) {
+        // If this group is the parent of the renamed group, update its subGroups
+        return {
+          ...group,
+          subGroups: updatedGroups
+        };
+      }
+      return {
+        ...group,
+        subGroups: group.subGroups ? this.updateGroupRecursively(group.subGroups, groupId, updatedGroups) : []
+      };
+    });
+  }
 }

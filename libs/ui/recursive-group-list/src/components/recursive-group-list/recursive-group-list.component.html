@@ -1,4 +1,4 @@
-@for (group of groups; track $index) {
+@for (group of groups(); track $index) {
 <div
   class="m-1"
   [dndDraggable]="{
@@ -45,7 +45,7 @@
   [visible]="contextMenuVisible"
   [position]="contextMenuPosition"
   [group]="selectedGroup!"
-  (rename)="renameGroupById($event.groupId, $event.newName, groups)"
+  (rename)="renameGroupById($event.groupId, $event.newName, groups())"
   (delete)="deleteGroup($event.group)"
   (close)="contextMenuVisible = false"
 >
